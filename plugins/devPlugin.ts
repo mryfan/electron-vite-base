@@ -34,7 +34,9 @@ export const devPlugin = () => {
     },
   };
 };
-
+interface result {
+  [key: string]: any;
+}
 export const getReplacer = () => {
   const externalModels = [
     "os",
@@ -49,10 +51,6 @@ export const getReplacer = () => {
     "better-sqlite3",
     "knex",
   ];
-
-  interface result {
-    [key: string]: any;
-  }
   const result: result = {};
   for (const item of externalModels) {
     result[item] = () => ({
