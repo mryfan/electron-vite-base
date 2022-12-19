@@ -34,3 +34,44 @@ export const devPlugin = () => {
     },
   };
 };
+
+export const getReplacer = () => {
+  const externalModels = [
+    "os",
+    "fs",
+    "path",
+    "events",
+    "child_process",
+    "crypto",
+    "http",
+    "buffer",
+    "url",
+    "better-sqlite3",
+    "knex",
+  ];
+
+  interface result {
+    [key: string]: any;
+  }
+  const result: result = {};
+  for (const item of externalModels) {
+    result[item] = () => ({
+      find: new RegExp(`^${item}$`),
+      code: `const ${item} = require('${item}');export { ${item} as default }`,
+    });
+  }
+  result["electron"] = () => {
+    const electronModules = [
+      "clipboard",
+      "ipcRenderer",
+      "nativeImage",
+      "shell",
+      "webFrame",
+    ].join(",");
+    return {
+      find: new RegExp(`^electron$`),
+      code: `const {${electronModules}} = require('electron');export {${electronModules}}`,
+    };
+  };
+  return result;
+};
