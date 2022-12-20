@@ -1,7 +1,7 @@
 import { app, BrowserWindow } from "electron";
 
 //用于设置渲染进程开发者调试工具的警告，这里设置为 true 就不会再显示任何警告了。
-// process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "true";
+process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "true";
 let mainWindow: BrowserWindow;
 
 app.whenReady().then(() => {
