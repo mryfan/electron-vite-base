@@ -1,22 +1,35 @@
 import { app, BrowserWindow } from "electron";
+import path from "path";
 
+// 禁用当前应用程序的硬件加速,解决控制台显示 “Passthrough is not supported, GL is disabled” 的问题
+app.disableHardwareAcceleration();
 //用于设置渲染进程开发者调试工具的警告，这里设置为 true 就不会再显示任何警告了。
-process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "true";
-let mainWindow: BrowserWindow;
+// process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "true";
 
-app.whenReady().then(() => {
-  const config = {
+const createWindow = () => {
+  const mainWindow = new BrowserWindow({
+    width: 800,
+    height: 600,
     webPreferences: {
-      nodeIntegration: true, //nodeIntegration配置项的作用是把 Node.js 环境集成到渲染进程中
-      //   webSecurity: false,
-      //   allowRunningInsecureContent: true,
-      contextIsolation: false, //配置项的作用是在同一个 JavaScript 上下文中使用 Electron API
-      //   webviewTag: true,
-      //   spellcheck: false,
-      //   disableHtmlFullscreenWindowResize: true,
+      preload: path.join(__dirname, "../preload/main.js"),
     },
-  };
-  mainWindow = new BrowserWindow(config);
+  });
   mainWindow.webContents.openDevTools({ mode: "undocked" });
   mainWindow.loadURL(process.argv[2]);
+};
+
+app.whenReady().then(() => {
+  createWindow();
+
+  app.on("activate", () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createWindow();
+    }
+  });
+});
+
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") {
+    app.quit();
+  }
 });

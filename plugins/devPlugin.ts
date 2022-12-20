@@ -1,15 +1,23 @@
 import type { ViteDevServer } from "vite";
 import type { AddressInfo } from "net";
+import { buildSync } from "esbuild";
 
 export const devPlugin = () => {
   return {
     name: "dev-plugin",
     configureServer(server: ViteDevServer) {
-      require("esbuild").buildSync({
+      buildSync({
         entryPoints: ["./src/main/mainEntry.ts"],
         bundle: true,
         platform: "node",
-        outfile: "./dist/mainEntry.js",
+        outfile: "./dist/main/mainEntry.js",
+        external: ["electron"],
+      });
+      buildSync({
+        entryPoints: ["./src/preload/main.ts"],
+        bundle: true,
+        platform: "node",
+        outdir: "./dist/preload",
         external: ["electron"],
       });
       server.httpServer!.once("listening", () => {
@@ -20,7 +28,7 @@ export const devPlugin = () => {
         }`;
         const electronProcess = spawn(
           require("electron").toString(),
-          ["./dist/mainEntry.js", httpAddress],
+          ["./dist/main/mainEntry.js", httpAddress],
           {
             cwd: process.cwd(),
             stdio: "inherit",
@@ -33,43 +41,4 @@ export const devPlugin = () => {
       });
     },
   };
-};
-interface result {
-  [key: string]: any;
-}
-export const getReplacer = () => {
-  const externalModels = [
-    "os",
-    "fs",
-    "path",
-    "events",
-    "child_process",
-    "crypto",
-    "http",
-    "buffer",
-    "url",
-    "better-sqlite3",
-    "knex",
-  ];
-  const result: result = {};
-  for (const item of externalModels) {
-    result[item] = () => ({
-      find: new RegExp(`^${item}$`),
-      code: `const ${item} = require('${item}');export { ${item} as default }`,
-    });
-  }
-  result["electron"] = () => {
-    const electronModules = [
-      "clipboard",
-      "ipcRenderer",
-      "nativeImage",
-      "shell",
-      "webFrame",
-    ].join(",");
-    return {
-      find: new RegExp(`^electron$`),
-      code: `const {${electronModules}} = require('electron');export {${electronModules}}`,
-    };
-  };
-  return result;
 };
