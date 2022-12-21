@@ -2,11 +2,12 @@
 // import { RouterLink, RouterView } from "vue-router";
 // import HelloWorld from "./components/HelloWorld.vue";
 
-// console.log(`${versions.chrome()}`);
+
 import { NLayout, NLayoutHeader, NMenu, NLayoutSider } from "naive-ui";
 import { ref } from "vue";
 import { menuOptions } from "./stores/menu/left-menu";
 import { RouteOperation } from "./router/redirect";
+console.log(`${versions.chrome()}`);
 RouteOperation();
 const inverted = ref(false);
 </script>

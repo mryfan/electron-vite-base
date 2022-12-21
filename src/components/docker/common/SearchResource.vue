@@ -33,8 +33,11 @@ import { ref } from "vue";
 import RealSearchResource from "./RealSearchResource.vue";
 
 //处理点击搜索按钮
-function handleClick() {
+async function handleClick() {
   showModal.value = true;
+
+  const response = await window.versions.ping();
+  console.log(response); // 打印 'pong'
 }
 //模态框控制
 const showModal = ref(false);

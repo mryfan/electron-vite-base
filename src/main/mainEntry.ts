@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, ipcMain } from "electron";
 import path from "path";
 
 // 禁用当前应用程序的硬件加速,解决控制台显示 “Passthrough is not supported, GL is disabled” 的问题
@@ -16,6 +16,7 @@ const createWindow = () => {
   });
   mainWindow.webContents.openDevTools();
   mainWindow.loadURL(process.argv[2]);
+  ipcMain.handle("ping", () => "pong");
 };
 
 app.whenReady().then(() => {
