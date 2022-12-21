@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
+import ImagesView from "../views/docker/ImagesView.vue";
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -8,6 +10,17 @@ const router = createRouter({
       path: "/workbench",
       name: "workbench",
       component: HomeView,
+    },
+    {
+      path: "/docker",
+      name: "docker",
+      children: [
+        {
+          path: "docker-images",
+          name: "docker/docker-images",
+          component: ImagesView,
+        },
+      ],
     },
     {
       path: "/about",

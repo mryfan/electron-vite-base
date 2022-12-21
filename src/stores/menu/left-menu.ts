@@ -29,7 +29,16 @@ export const menuOptions = [
     icon: renderIcon(BookIcon),
     children: [
       {
-        label: "镜像(images)",
+        label: () =>
+          h(
+            RouterLink,
+            {
+              to: {
+                name: "docker/docker-images",
+              },
+            },
+            { default: () => "镜像(images)" }
+          ),
         key: "docker-images",
       },
       {
