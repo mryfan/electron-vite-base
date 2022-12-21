@@ -1,11 +1,8 @@
 import { h } from "vue";
 import { NIcon } from "naive-ui";
 import type { Component } from "vue";
-import {
-  BookOutline as BookIcon,
-  PersonOutline as PersonIcon,
-  WineOutline as WineIcon,
-} from "@vicons/ionicons5";
+import { BookOutline as BookIcon } from "@vicons/ionicons5";
+import { RouterLink } from "vue-router";
 
 function renderIcon(icon: Component) {
   return () => h(NIcon, null, { default: () => h(icon) });
@@ -13,73 +10,57 @@ function renderIcon(icon: Component) {
 
 export const menuOptions = [
   {
-    label: "且听风吟",
-    key: "hear-the-wind-sing",
+    label: () =>
+      h(
+        RouterLink,
+        {
+          to: {
+            name: "workbench",
+          },
+        },
+        { default: () => "工作台" }
+      ),
+    key: "workbench",
     icon: renderIcon(BookIcon),
   },
   {
-    label: "1973年的弹珠玩具",
-    key: "pinball-1973",
+    label: "docker",
+    key: "docker",
     icon: renderIcon(BookIcon),
     children: [
       {
-        label: "鼠",
-        key: "rat",
+        label: "镜像(images)",
+        key: "docker-images",
+      },
+      {
+        label: "容器(containers)",
+        key: "docker-containers",
       },
     ],
   },
   {
-    label: "寻羊冒险记",
+    label: "占位",
+    key: "3232323232",
+    icon: renderIcon(BookIcon),
+    children: [
+      {
+        label: () =>
+          h(
+            RouterLink,
+            {
+              to: {
+                name: "about",
+              },
+            },
+            { default: () => "关于" }
+          ),
+        key: "about",
+      },
+    ],
+  },
+  {
+    label: "占位",
     key: "a-wild-sheep-chase",
     icon: renderIcon(BookIcon),
-  },
-  {
-    label: "舞，舞，舞",
-    key: "dance-dance-dance",
-    icon: renderIcon(BookIcon),
-    children: [
-      {
-        type: "group",
-        label: "人物",
-        key: "people",
-        children: [
-          {
-            label: "叙事者",
-            key: "narrator",
-            icon: renderIcon(PersonIcon),
-          },
-          {
-            label: "羊男",
-            key: "sheep-man",
-            icon: renderIcon(PersonIcon),
-          },
-        ],
-      },
-      {
-        label: "饮品",
-        key: "beverage",
-        icon: renderIcon(WineIcon),
-        children: [
-          {
-            label: "威士忌",
-            key: "whisky",
-          },
-        ],
-      },
-      {
-        label: "食物",
-        key: "food",
-        children: [
-          {
-            label: "三明治",
-            key: "sandwich",
-          },
-        ],
-      },
-      {
-        label: "过去增多，未来减少",
-        key: "the-past-increases-the-future-recedes",
-      },
-    ],
   },
 ];

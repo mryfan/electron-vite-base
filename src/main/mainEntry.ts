@@ -14,7 +14,7 @@ const createWindow = () => {
       preload: path.join(__dirname, "../preload/main.js"),
     },
   });
-  mainWindow.webContents.openDevTools({ mode: "undocked" });
+  mainWindow.webContents.openDevTools();
   mainWindow.loadURL(process.argv[2]);
 };
 
