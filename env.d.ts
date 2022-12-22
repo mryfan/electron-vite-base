@@ -7,7 +7,7 @@ interface Window {
     ping: () => void;
   };
   http_request: {
-    search_images: (q: string) => void;
+    search_images: (q: string) => Promise<{ data: { summaries: any[] } }>;
   };
 }
 
