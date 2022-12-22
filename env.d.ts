@@ -6,6 +6,9 @@ interface Window {
     chrome: () => void;
     ping: () => void;
   };
+  http_request: {
+    search_images: () => void;
+  };
 }
 
 interface ImportMetaEnv {

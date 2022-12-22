@@ -6,3 +6,7 @@ contextBridge.exposeInMainWorld("versions", {
   electron: () => process.versions.electron,
   ping: () => ipcRenderer.invoke("ping"),
 });
+
+contextBridge.exposeInMainWorld("http_request", {
+  search_images: () => ipcRenderer.invoke("http_request_search_images"),
+});

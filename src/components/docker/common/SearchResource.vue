@@ -36,8 +36,8 @@ import RealSearchResource from "./RealSearchResource.vue";
 async function handleClick() {
   showModal.value = true;
 
-  const response = await window.versions.ping();
-  console.log(response); // 打印 'pong'
+  const response = await window.http_request.search_images();
+  console.log(response);
 }
 //模态框控制
 const showModal = ref(false);
