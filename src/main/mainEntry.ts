@@ -1,5 +1,6 @@
-import { app, BrowserWindow, ipcMain } from "electron";
+import { app, BrowserWindow } from "electron";
 import path from "path";
+import { handle as ipcMainHandle } from "./ipcMainHandle";
 
 // 禁用当前应用程序的硬件加速,解决控制台显示 “Passthrough is not supported, GL is disabled” 的问题
 app.disableHardwareAcceleration();
@@ -16,7 +17,7 @@ const createWindow = () => {
   });
   mainWindow.webContents.openDevTools();
   mainWindow.loadURL(process.argv[2]);
-  ipcMain.handle("ping", () => "pong");
+  ipcMainHandle();
 };
 
 app.whenReady().then(() => {

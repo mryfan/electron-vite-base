@@ -1,13 +1,11 @@
 <script setup lang="ts">
 // import { RouterLink, RouterView } from "vue-router";
 // import HelloWorld from "./components/HelloWorld.vue";
-
-
 import { NLayout, NLayoutHeader, NMenu, NLayoutSider } from "naive-ui";
 import { ref } from "vue";
 import { menuOptions } from "./stores/menu/left-menu";
 import { RouteOperation } from "./router/redirect";
-console.log(`${versions.chrome()}`);
+console.log(`${window.versions.chrome()}`);
 RouteOperation();
 const inverted = ref(false);
 </script>
