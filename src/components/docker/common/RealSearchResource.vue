@@ -13,8 +13,10 @@
 import { NInput, NSpace } from "naive-ui";
 import { ref } from "vue";
 const value = ref("");
-function update() {
+async function update() {
   console.log(value.value);
+  const response = await window.http_request.search_images(value.value);
+  console.log(response);
 }
 </script>
 

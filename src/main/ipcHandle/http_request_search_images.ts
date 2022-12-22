@@ -1,9 +1,10 @@
+import type { IpcMainInvokeEvent } from "electron";
 import https from "https";
 
-function sendHttpRequest(encoding: BufferEncoding = "utf8") {
+function sendHttpRequest(q: string, encoding: BufferEncoding = "utf8") {
   const options = {
     hostname: "hub.docker.com",
-    path: "/api/content/v1/products/search?page_size=25&q=mysql",
+    path: `/api/content/v1/products/search?page_size=25&q=${q}`,
     port: "443",
     method: "GET",
     headers: {
@@ -30,7 +31,7 @@ function sendHttpRequest(encoding: BufferEncoding = "utf8") {
     req.end();
   });
 }
-export async function handle() {
-  const res = await sendHttpRequest();
+export async function handle(event: IpcMainInvokeEvent, q: string) {
+  const res = await sendHttpRequest(q);
   return res;
 }

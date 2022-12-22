@@ -35,9 +35,6 @@ import RealSearchResource from "./RealSearchResource.vue";
 //处理点击搜索按钮
 async function handleClick() {
   showModal.value = true;
-
-  const response = await window.http_request.search_images();
-  console.log(response);
 }
 //模态框控制
 const showModal = ref(false);
