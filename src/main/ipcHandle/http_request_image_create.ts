@@ -19,11 +19,13 @@ function sendHttpRequest(
     const req = http.request(options, function (res) {
       res.setEncoding(encoding);
       res.on("data", function (chunk) {
+        console.log(chunk);
+        resolve({ result: true, data: chunk });
         data += chunk;
       });
 
       res.on("end", function () {
-        resolve({ result: true, data: JSON.parse(data) });
+        resolve({ result: true, data });
       });
     });
 
@@ -40,7 +42,7 @@ export async function handle(
 ) {
   console.log("imageName", imageName);
   console.log("imageTag", imageTag);
-  const res = await sendHttpRequest(imageName, imageTag);
-  console.log(res);
+  const res = sendHttpRequest(imageName, imageTag);
+  console.log(111, res);
   return res;
 }
