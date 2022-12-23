@@ -87,4 +87,21 @@ async function getImageTags(searchString: string) {
   return tmp;
 }
 
-export { columns, getTableData, getImageTags };
+async function imageCreate(imageName: string, imageTag: string) {
+  const response = await window.http_request.image_create(imageName, imageTag);
+  console.log(response);
+  // const tmp: any[] = [];
+  // if (!response.data.results) {
+  //   return tmp;
+  // }
+  // for (const element of response.data.results) {
+  //   tmp.push({
+  //     label: element.name,
+  //     value: element.name,
+  //     e_data: element,
+  //   });
+  // }
+  // return tmp;
+}
+
+export { columns, getTableData, getImageTags, imageCreate };

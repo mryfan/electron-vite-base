@@ -9,6 +9,11 @@ interface Window {
   http_request: {
     search_images: (q: string) => Promise<{ data: { summaries: any[] } }>;
     search_image_tags: (q: string) => Promise<{ data: { results: any[] } }>;
+    //请求对应的接口地址
+    image_create: (
+      imageName: string,
+      imageTag: string
+    ) => Promise<{ data: { results: any[] } }>; //创建镜像
   };
 }
 

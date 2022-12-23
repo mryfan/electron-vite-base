@@ -35,6 +35,7 @@ import {
   columns,
   getTableData,
   getImageTags,
+  imageCreate,
 } from "../../../stores/search-images-table/columns";
 
 const value = ref("");
@@ -67,9 +68,10 @@ function rowProps(row: any) {
 function handleClickPullButton() {
   console.log(selectImageName.value);
   console.log(tagValue.value);
+  return imageCreate(selectImageName.value, tagValue.value as string);
 }
 
-const tagValue = ref(null);
+const tagValue = ref<string | null>(null);
 const selectImageName = ref("");
 const tagOptions = ref<any[]>();
 </script>

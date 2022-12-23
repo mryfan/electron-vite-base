@@ -12,4 +12,6 @@ contextBridge.exposeInMainWorld("http_request", {
     ipcRenderer.invoke("http_request_search_images", q),
   search_image_tags: (q: string) =>
     ipcRenderer.invoke("http_request_search_image_tags", q),
+  image_create: (imageName: string, imageTag: string) =>
+    ipcRenderer.invoke("http_request_image_create", imageName, imageTag),
 });
