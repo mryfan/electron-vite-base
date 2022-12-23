@@ -8,6 +8,7 @@ interface Window {
   };
   http_request: {
     search_images: (q: string) => Promise<{ data: { summaries: any[] } }>;
+    search_image_tags: (q: string) => Promise<{ data: { results: any[] } }>;
   };
 }
 

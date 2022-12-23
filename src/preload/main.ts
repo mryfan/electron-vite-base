@@ -10,4 +10,6 @@ contextBridge.exposeInMainWorld("versions", {
 contextBridge.exposeInMainWorld("http_request", {
   search_images: (q: string) =>
     ipcRenderer.invoke("http_request_search_images", q),
+  search_image_tags: (q: string) =>
+    ipcRenderer.invoke("http_request_search_image_tags", q),
 });

@@ -15,7 +15,7 @@ const createWindow = () => {
       preload: path.join(__dirname, "../preload/main.js"),
     },
   });
-  mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools({ mode: "right" });
   mainWindow.loadURL(process.argv[2]);
   ipcMainHandle();
 };

@@ -1,5 +1,5 @@
 import { h } from "vue";
-import { NImage } from "naive-ui";
+import { NImage, NTag } from "naive-ui";
 
 const columns = [
   {
@@ -21,6 +21,25 @@ const columns = [
   {
     title: "名字",
     key: "name",
+  },
+  {
+    title: "Trusted Content",
+    key: "trusted_content",
+    render(row: any) {
+      return h(
+        NTag,
+        {
+          style: {
+            marginRight: "6px",
+          },
+          type: "info",
+          bordered: false,
+        },
+        {
+          default: () => row.filter_type,
+        }
+      );
+    },
   },
   {
     title: "pull 次数",
@@ -46,9 +65,26 @@ async function getTableData(searchString: string) {
       name: element.name,
       pull_count: element.pull_count,
       star_count: element.star_count,
+      filter_type: element.filter_type,
     });
   }
   return tmp;
 }
 
-export { columns, getTableData };
+async function getImageTags(searchString: string) {
+  const response = await window.http_request.search_image_tags(searchString);
+  const tmp: any[] = [];
+  if (!response.data.results) {
+    return tmp;
+  }
+  for (const element of response.data.results) {
+    tmp.push({
+      label: element.name,
+      value: element.name,
+      e_data: element,
+    });
+  }
+  return tmp;
+}
+
+export { columns, getTableData, getImageTags };
