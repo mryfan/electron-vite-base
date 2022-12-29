@@ -42,8 +42,17 @@ export const menuOptions = [
         key: "docker-images",
       },
       {
-        label: "容器(containers)",
-        key: "docker-containers",
+        label: () =>
+          h(
+            RouterLink,
+            {
+              to: {
+                name: "docker/docker-project",
+              },
+            },
+            { default: () => "docker项目" }
+          ),
+        key: "docker-project",
       },
     ],
   },
