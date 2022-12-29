@@ -41,9 +41,7 @@ import {
   NSpace,
   NButton,
   type FormInst,
-  useMessage,
 } from "naive-ui";
-const message = useMessage();
 const model = ref({
   name: "",
   remark: "",
@@ -63,10 +61,11 @@ const formRef = ref<FormInst | null>();
 function handleClickCreateProjectButton(e: MouseEvent) {
   e.preventDefault();
   formRef.value?.validate((errors) => {
-    if (errors) {
-      message.error("验证无效");
-    } else {
+    if (!errors) {
+      // message1.error("验证无效");
       console.log("errors", errors);
+    } else {
+      console.log("errors111", errors);
     }
   });
 }
