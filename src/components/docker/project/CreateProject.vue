@@ -58,16 +58,10 @@ const rules: FormRules = {
   remark: [],
 };
 const formRef = ref<FormInst | null>();
-function handleClickCreateProjectButton(e: MouseEvent) {
+async function handleClickCreateProjectButton(e: MouseEvent) {
   e.preventDefault();
-  formRef.value?.validate((errors) => {
-    if (!errors) {
-      // message1.error("验证无效");
-      console.log("errors", errors);
-    } else {
-      console.log("errors111", errors);
-    }
-  });
+  window.el_store.set("project_info", 111);
+  console.log(await window.el_store.get("project_info"));
 }
 </script>
 

@@ -15,3 +15,10 @@ contextBridge.exposeInMainWorld("http_request", {
   image_create: (imageName: string, imageTag: string) =>
     ipcRenderer.invoke("http_request_image_create", imageName, imageTag),
 });
+
+//加载electron-store 方法
+contextBridge.exposeInMainWorld("el_store", {
+  set: (key: string, value: string | Object | Boolean) =>
+    ipcRenderer.invoke("el_store_set", key, value),
+  get: (key: string) => ipcRenderer.invoke("el_store_get", key),
+});
