@@ -46,7 +46,7 @@ const model = ref({
   name: "",
   remark: "",
 });
-
+const emit = defineEmits(["closeModal"]);
 const rules: FormRules = {
   name: [
     {
@@ -60,8 +60,14 @@ const rules: FormRules = {
 const formRef = ref<FormInst | null>();
 async function handleClickCreateProjectButton(e: MouseEvent) {
   e.preventDefault();
-  window.el_store.set("project_info", 111);
-  console.log(await window.el_store.get("project_info"));
+  let project_info = await window.el_store.get("project_info");
+  if (!Array.isArray(project_info)) {
+    project_info = [];
+    window.el_store.set("project_info", project_info);
+  }
+  project_info.push({ name: model.value.name, remark: model.value.remark });
+  window.el_store.set("project_info", project_info);
+  emit("closeModal");
 }
 </script>
 

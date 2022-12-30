@@ -15,7 +15,7 @@ declare global {
       ) => Promise<{ data: { results: any[] } }>; //创建镜像
     };
     el_store: {
-      get: (key: string) => Promise<string | Object | Boolean>;
+      get: (key: string) => Promise<string | Object | Boolean | Array>;
       set: (key: string, value: string | Object | Boolean) => void;
     };
   }

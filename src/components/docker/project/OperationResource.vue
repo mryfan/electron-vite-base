@@ -19,7 +19,7 @@
           top: 50px;
         "
       >
-        <create-project></create-project>
+        <create-project @close-modal="closeModal" />
       </n-modal>
     </n-space>
   </n-card>
@@ -32,12 +32,16 @@ import { ref } from "vue";
 
 const titleText = ref("创建项目");
 
-//处理点击搜索按钮
+//处理点击创建项目按钮
 async function handleClick() {
   showModal.value = true;
 }
 //模态框控制
 const showModal = ref(false);
+
+function closeModal() {
+  showModal.value = false;
+}
 </script>
 
 <style lang="scss" scoped></style>
