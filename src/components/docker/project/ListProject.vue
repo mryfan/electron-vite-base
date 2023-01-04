@@ -9,8 +9,9 @@ import {
   createData,
   type RowData,
 } from "../../../stores/docker-project/get-list-project-columns";
-import { ref, onMounted } from "vue";
-
+import { ref, onMounted, watch } from "vue";
+import { useListReloadCounterStore } from "@/stores/docker-project/external-event-bus";
+const counter = useListReloadCounterStore();
 const message = useMessage();
 
 const tableData = ref<RowData[]>([]);
@@ -30,6 +31,14 @@ onMounted(() => {
     tableData.value = data;
   });
 });
+watch(
+  () => counter.count,
+  () => {
+    createData().then((data) => {
+      tableData.value = data;
+    });
+  }
+);
 </script>
 
 <style lang="scss" scoped></style>

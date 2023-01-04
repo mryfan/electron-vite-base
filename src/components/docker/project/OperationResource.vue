@@ -29,6 +29,8 @@
 import { NCard, NSpace, NButton, NModal } from "naive-ui";
 import CreateProject from "./CreateProject.vue";
 import { ref } from "vue";
+import { useListReloadCounterStore } from "@/stores/docker-project/external-event-bus";
+const counter = useListReloadCounterStore();
 
 const titleText = ref("创建项目");
 
@@ -41,6 +43,7 @@ const showModal = ref(false);
 
 async function closeModal() {
   showModal.value = false;
+  counter.increment();
 }
 </script>
 
