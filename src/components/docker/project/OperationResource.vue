@@ -39,7 +39,7 @@ async function handleClick() {
 //模态框控制
 const showModal = ref(false);
 
-function closeModal() {
+async function closeModal() {
   showModal.value = false;
 }
 </script>
