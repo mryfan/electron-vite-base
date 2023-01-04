@@ -42,6 +42,8 @@ import {
   NButton,
   type FormInst,
 } from "naive-ui";
+import { Direction } from "../../../stores/docker-project/enum-data";
+
 const model = ref({
   name: "",
   remark: "",
@@ -65,7 +67,11 @@ async function handleClickCreateProjectButton(e: MouseEvent) {
     project_info = [];
     window.el_store.set("project_info", project_info);
   }
-  project_info.push({ name: model.value.name, remark: model.value.remark });
+  project_info.push({
+    name: model.value.name,
+    remark: model.value.remark,
+    status: Direction.Created,
+  });
   window.el_store.set("project_info", project_info);
   emit("closeModal");
 }

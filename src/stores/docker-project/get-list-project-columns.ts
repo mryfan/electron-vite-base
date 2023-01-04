@@ -3,11 +3,9 @@ import { NTag, NButton } from "naive-ui";
 import { h } from "vue";
 
 type RowData = {
-  key: number;
   name: string;
-  age: number;
-  address: string;
-  tags: string[];
+  remark: string;
+  status: string;
 };
 
 const createColumns = ({
@@ -27,48 +25,41 @@ const createColumns = ({
       },
     },
     {
-      title: "#",
-      key: "key",
+      title: "序号",
+      key: "serial_number",
       render: (_, index) => {
         return `${index + 1}`;
       },
     },
     {
-      title: "Name",
+      title: "项目名称",
       key: "name",
     },
     {
-      title: "Age",
-      key: "age",
+      title: "项目备注",
+      key: "remark",
     },
     {
-      title: "Address",
-      key: "address",
-    },
-    {
-      title: "Tags",
-      key: "tags",
-      render(row) {
-        const tags = row.tags.map((tagKey) => {
-          return h(
-            NTag,
-            {
-              style: {
-                marginRight: "6px",
-              },
-              type: "info",
-              bordered: false,
+      title: "状态",
+      key: "status",
+      render(row: RowData) {
+        return h(
+          NTag,
+          {
+            style: {
+              marginRight: "6px",
             },
-            {
-              default: () => tagKey,
-            }
-          );
-        });
-        return tags;
+            type: "info",
+            bordered: false,
+          },
+          {
+            default: () => row.status,
+          }
+        );
       },
     },
     {
-      title: "Action",
+      title: "操作",
       key: "actions",
       render(row) {
         return h(
@@ -77,35 +68,17 @@ const createColumns = ({
             size: "small",
             onClick: () => sendMail(row),
           },
-          { default: () => "Send Email" }
+          { default: () => "创建容器" }
         );
       },
     },
   ];
 };
 
-const createData = (): RowData[] => [
-  {
-    key: 0,
-    name: "John Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park",
-    tags: ["nice", "developer"],
-  },
-  {
-    key: 1,
-    name: "Jim Green",
-    age: 42,
-    address: "London No. 1 Lake Park",
-    tags: ["wow"],
-  },
-  {
-    key: 2,
-    name: "Joe Black",
-    age: 32,
-    address: "Sidney No. 1 Lake Park",
-    tags: ["cool", "teacher"],
-  },
-];
+const createData = async (): Promise<RowData[]> => {
+  const project_info: RowData[] = await window.el_store.get("project_info");
+  console.log(project_info);
+  return project_info;
+};
 
-export { createColumns, createData };
+export { createColumns, createData, type RowData };

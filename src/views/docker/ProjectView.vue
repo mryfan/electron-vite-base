@@ -1,7 +1,7 @@
 <template>
   <operation-resource></operation-resource>
-  <n-card title="镜像">
-    <template #header-extra> 镜像列表 </template>
+  <n-card title="项目">
+    <template #header-extra> 项目列表 </template>
     <list-project></list-project>
   </n-card>
 </template>
