@@ -23,17 +23,15 @@
           placeholder="容器名称(可以不指定，默认是随机)"
         />
       </n-form-item>
-
-      <n-space :inline="true">
-        <n-form-item label="镜像数据">
-          <n-form-item label="名称">
-            <n-input v-model:value="model.images.name" placeholder="镜像名称" />
-          </n-form-item>
-          <n-form-item label="标签">
-            <n-input v-model:value="model.images.tag" placeholder="标签" />
-          </n-form-item>
-        </n-form-item>
-      </n-space>
+      <n-form-item label="镜像数据">
+        <n-input-group>
+          <n-input v-model:value="model.images.name" placeholder="镜像名称" />
+          <n-input
+            v-model:value="model.images.tag"
+            placeholder="标签(默认latest)"
+          />
+        </n-input-group>
+      </n-form-item>
 
       <n-form-item label="端口绑定">
         <n-space vertical>
@@ -47,17 +45,21 @@
               v-model:value="item.host_port"
               style="width: 120px"
               placeholder="主机端口"
+              min="1"
+              max="65535"
             />
             <n-input-number
               v-model:value="item.container_port"
               style="width: 120px"
               placeholder="容器端口"
+              min="1"
+              max="65535"
             />
             <n-select
               v-model:value="item.protocol"
               style="width: 100px"
               placeholder="协议"
-              :options="options"
+              :options="protocol_options"
             />
             <n-button-group size="small">
               <n-button type="default" round @click="removePortBinding(index)">
@@ -74,9 +76,67 @@
           </n-input-group>
         </n-space>
       </n-form-item>
+
+      <n-form-item label="挂载绑定">
+        <n-space vertical>
+          <n-input-group
+            v-for="(item, index) in model.volumes_items"
+            :key="index"
+          >
+            <n-select
+              v-model:value="item.binding_type"
+              style="width: 250px"
+              placeholder="绑定方式"
+              :options="volumes_options"
+            />
+            <n-input
+              v-model:value="item.host_dir"
+              style="width: 120px"
+              placeholder="主机目录"
+            >
+              <template #suffix>
+                <n-icon
+                  class="selectDir"
+                  :component="EllipsisHorizontal"
+                  @click="handleClickSelectDir"
+                />
+              </template>
+            </n-input>
+            <n-input
+              v-model:value="item.container_dir"
+              style="width: 120px"
+              placeholder="容器目录"
+            />
+            <n-button-group size="small">
+              <n-button
+                type="default"
+                round
+                @click="removeVolumesBinding(index)"
+              >
+                <template #icon>
+                  <n-icon><remove-sharp /></n-icon>
+                </template>
+              </n-button>
+              <n-button type="default" round @click="addVolumesBinding">
+                <template #icon>
+                  <n-icon><add-sharp /></n-icon>
+                </template>
+              </n-button>
+            </n-button-group>
+          </n-input-group>
+        </n-space>
+      </n-form-item>
     </n-form>
     <n-space justify="center">
       <n-button>创建容器</n-button>
+      <n-upload
+        :directory="true"
+        v-show="false"
+        @change="handleUploadChange"
+        :default-upload="false"
+      >
+        <n-button ref="uploadDirPath">上传文件</n-button>
+      </n-upload>
     </n-space>
   </n-modal>
 </template>
@@ -95,8 +155,10 @@ import {
   NInputGroup,
   useMessage,
   NInputNumber,
+  NUpload,
+  type UploadFileInfo,
 } from "naive-ui";
-import { AddSharp, RemoveSharp } from "@vicons/ionicons5";
+import { AddSharp, RemoveSharp, EllipsisHorizontal } from "@vicons/ionicons5";
 import { ref, computed } from "vue";
 const props = defineProps<{
   showModal: boolean;
@@ -125,8 +187,16 @@ const model = ref({
   port_items: [
     { host_ip: "", host_port: null, container_port: null, protocol: "tcp" },
   ],
+  volumes_items: [
+    {
+      binding_type: "host_to_container",
+      host_dir: "",
+      container_dir: "",
+      data_volumes_name: "",
+    },
+  ],
 });
-const options = ref([
+const protocol_options = ref([
   {
     label: "tcp",
     value: "tcp",
@@ -138,6 +208,21 @@ const options = ref([
   {
     label: "sctp",
     value: "sctp",
+  },
+]);
+
+const volumes_options = ref([
+  {
+    label: "主机的目录绑定到容器",
+    value: "host_to_container",
+  },
+  {
+    label: "容器里面的文件或目录绑定到主机",
+    value: "container_to_host",
+  },
+  {
+    label: "数据卷的挂载",
+    value: "data_volumes",
   },
 ]);
 
@@ -156,6 +241,34 @@ function removePortBinding(index: number) {
     model.value.port_items.splice(index, 1);
   }
 }
+function addVolumesBinding() {
+  model.value.volumes_items.push({
+    binding_type: "host_to_container",
+    host_dir: "",
+    container_dir: "",
+    data_volumes_name: "",
+  });
+}
+function removeVolumesBinding(index: number) {
+  if (model.value.volumes_items.length <= 1) {
+    messages.info("不允许删除");
+  } else {
+    model.value.volumes_items.splice(index, 1);
+  }
+}
+const uploadDirPath = ref<InstanceType<typeof NButton> | null>(null);
+
+function handleClickSelectDir() {
+  uploadDirPath.value?.selfElRef?.click();
+}
+
+function handleUploadChange(data: { fileList: UploadFileInfo[] }) {
+  console.log(data);
+}
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped>
+.selectDir:hover {
+  cursor: pointer;
+}
+</style>
