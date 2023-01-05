@@ -2,6 +2,24 @@ import type { DataTableColumns } from "naive-ui";
 import { NTag, NButton } from "naive-ui";
 import { h } from "vue";
 
+const actionArray: Array<{
+  name: string;
+  size: "small";
+}> = [
+  {
+    name: "创建容器",
+    size: "small",
+  },
+  {
+    name: "发布",
+    size: "small",
+  },
+  {
+    name: "删除",
+    size: "small",
+  },
+];
+
 type RowData = {
   name: string;
   remark: string;
@@ -10,9 +28,9 @@ type RowData = {
 };
 
 const createColumns = ({
-  sendMail,
+  createContainer,
 }: {
-  sendMail: (rowData: RowData) => void;
+  createContainer: (rowData: RowData, rowIndex: number) => void;
 }): DataTableColumns<RowData> => {
   return [
     {
@@ -81,15 +99,17 @@ const createColumns = ({
     {
       title: "操作",
       key: "actions",
-      render(row) {
-        return h(
-          NButton,
-          {
-            size: "small",
-            onClick: () => sendMail(row),
-          },
-          { default: () => "创建容器" }
-        );
+      render(row: RowData, rowIndex: number) {
+        return [
+          h(
+            NButton,
+            {
+              size: "small",
+              onClick: () => createContainer(row, rowIndex),
+            },
+            { default: () => "创建容器" }
+          ),
+        ];
       },
     },
   ];
