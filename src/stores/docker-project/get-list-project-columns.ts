@@ -5,7 +5,8 @@ import { h } from "vue";
 type RowData = {
   name: string;
   remark: string;
-  status: string;
+  project_status: string;
+  run_status: string;
 };
 
 const createColumns = ({
@@ -40,8 +41,8 @@ const createColumns = ({
       key: "remark",
     },
     {
-      title: "状态",
-      key: "status",
+      title: "项目状态",
+      key: "project_status",
       render(row: RowData) {
         return h(
           NTag,
@@ -53,7 +54,26 @@ const createColumns = ({
             bordered: false,
           },
           {
-            default: () => row.status,
+            default: () => row.project_status,
+          }
+        );
+      },
+    },
+    {
+      title: "运行状态",
+      key: "run_status",
+      render(row: RowData) {
+        return h(
+          NTag,
+          {
+            style: {
+              marginRight: "6px",
+            },
+            type: "info",
+            bordered: false,
+          },
+          {
+            default: () => row.run_status,
           }
         );
       },

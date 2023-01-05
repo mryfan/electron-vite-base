@@ -41,8 +41,11 @@ import {
   NSpace,
   NButton,
   type FormInst,
+  useMessage,
 } from "naive-ui";
-import { Direction } from "../../../stores/docker-project/enum-data";
+import { ProjectStatus, RunStatus } from "@/stores/docker-project/enum-data";
+import type { RowData } from "@/stores/docker-project/get-list-project-columns";
+const message = useMessage();
 
 const model = ref({
   name: "",
@@ -62,15 +65,33 @@ const rules: FormRules = {
 const formRef = ref<FormInst | null>();
 async function handleClickCreateProjectButton(e: MouseEvent) {
   e.preventDefault();
-  let project_info = await window.el_store.get("project_info");
+  let project_info: RowData[] = await window.el_store.get("project_info");
   if (!Array.isArray(project_info)) {
     project_info = [];
-    window.el_store.set("project_info", project_info);
   }
+  let exist = false;
+  //验证之前是否存在该项目的名称
+  project_info.forEach((element: { name: string }) => {
+    if (element.name == model.value.name) {
+      exist = true;
+    }
+  });
+
+  if (exist) {
+    message.info("当前项目名称已经存在");
+    return;
+  }
+
+  if (model.value.name == "") {
+    message.info("项目名称不允许为空");
+    return;
+  }
+
   project_info.push({
     name: model.value.name,
     remark: model.value.remark,
-    status: Direction.Created,
+    project_status: ProjectStatus.Created,
+    run_status: RunStatus.Stop,
   });
   window.el_store.set("project_info", project_info);
   emit("closeModal");

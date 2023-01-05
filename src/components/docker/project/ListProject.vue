@@ -8,7 +8,7 @@ import {
   createColumns,
   createData,
   type RowData,
-} from "../../../stores/docker-project/get-list-project-columns";
+} from "@/stores/docker-project/get-list-project-columns";
 import { ref, onMounted, watch } from "vue";
 import { useListReloadCounterStore } from "@/stores/docker-project/external-event-bus";
 const counter = useListReloadCounterStore();
