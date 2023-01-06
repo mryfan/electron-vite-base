@@ -88,7 +88,7 @@ function expandColumns(counter: any) {
     {
       title: "操作",
       key: "actions",
-      render(row: RowData, rowIndex: number) {
+      render(row: RowData) {
         return [
           h(
             NButton,
