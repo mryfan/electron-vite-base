@@ -10,12 +10,130 @@ type RowData = {
   run_status: string;
 };
 
+function expandColumns(counter: any) {
+  return [
+    {
+      title: "ID",
+      key: "id",
+    },
+    {
+      title: "容器名称",
+      key: "name",
+      render: (row: any) => {
+        if (row.name != "") {
+          return row.name;
+        }
+        return h(
+          NTag,
+          {
+            type: "success",
+          },
+          {
+            default: () => {
+              return "未填写";
+            },
+          }
+        );
+      },
+    },
+    {
+      title: "镜像",
+      key: "image_info",
+      render: (row: any) => {
+        return h(
+          NTag,
+          {
+            type: "success",
+          },
+          {
+            default: () => {
+              return row.images.name + ":" + row.images.tag;
+            },
+          }
+        );
+      },
+    },
+    {
+      title: "端口",
+      key: "port_info",
+      render: (row: any) => {
+        return row.port_items.map(function (params: any) {
+          return h(
+            NTag,
+            {
+              type: "success",
+            },
+            {
+              default: () => {
+                let tmp = "";
+                if (params.host_ip != "") {
+                  tmp += params.host_ip + ":";
+                }
+                if (params.host_port != "") {
+                  tmp += params.host_port + ":";
+                }
+                if (params.container_port != "") {
+                  tmp += params.container_port + ":";
+                }
+                if (params.protocol != "") {
+                  tmp += params.protocol;
+                }
+                return tmp;
+              },
+            }
+          );
+        });
+      },
+    },
+    {
+      title: "操作",
+      key: "actions",
+      render(row: RowData, rowIndex: number) {
+        return [
+          h(
+            NButton,
+            {
+              size: "small",
+              onClick: async () => {
+                const allContainerInfo = await window.el_store.get(
+                  "container_info"
+                );
+                const newContainerInfo = [];
+                for (const iterator of allContainerInfo) {
+                  if (iterator.id != row.id) {
+                    newContainerInfo.push(iterator);
+                  }
+                }
+                await window.el_store.set("container_info", newContainerInfo);
+                counter.increment();
+              },
+            },
+            { default: () => "删除" }
+          ),
+        ];
+      },
+    },
+  ];
+}
+
+function expandData(rowData: RowData) {
+  const tmp = [];
+  for (const iterator of containerStore.value) {
+    if (iterator.project_id == rowData.id) {
+      tmp.push(iterator);
+    }
+  }
+  return tmp;
+}
+
 const containerStore = ref<Array<{ id: number; project_id: number }>>([]);
 
 const createColumns = ({
   createContainer,
+  counter,
 }: {
   createContainer: (rowData: RowData, rowIndex: number) => void;
+  counter: any;
 }): DataTableColumns<RowData> => {
   return [
     {
@@ -28,14 +146,15 @@ const createColumns = ({
         for (const iterator of containerStore.value) {
           if (iterator.project_id == rowData.id) {
             tmp = true;
+            return tmp;
           }
         }
         return tmp;
       },
       renderExpand: (rowData) => {
-        // return `${rowData.name} is a good guy.`;
         return h(NDataTable, {
-          columns: [],
+          columns: expandColumns(counter),
+          data: expandData(rowData),
         });
       },
     },

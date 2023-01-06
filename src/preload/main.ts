@@ -21,4 +21,5 @@ contextBridge.exposeInMainWorld("el_store", {
   set: (key: string, value: string | Object | Boolean) =>
     ipcRenderer.invoke("el_store_set", key, value),
   get: (key: string) => ipcRenderer.invoke("el_store_get", key),
+  delete: (key: string) => ipcRenderer.invoke("el_store_delete", key),
 });

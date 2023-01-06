@@ -28,6 +28,7 @@ const columns = createColumns({
     showModal.value = true;
     projectID.value = rowData.id;
   },
+  counter,
 });
 
 function rowKey(rowData: RowData) {

@@ -17,6 +17,7 @@ declare global {
     el_store: {
       get: (key: string) => Promise<string | Object | Boolean | Array>;
       set: (key: string, value: string | Object | Boolean) => void;
+      delete: (key: string) => void;
     };
   }
 }

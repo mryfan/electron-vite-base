@@ -22,4 +22,7 @@ export function handle() {
   ipcMain.handle("el_store_get", (event, key) => {
     return store.get(key);
   });
+  ipcMain.handle("el_store_delete", (event, key) => {
+    return store.delete(key);
+  });
 }
