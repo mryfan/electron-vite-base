@@ -120,6 +120,14 @@
           </div>
         </n-space>
       </n-form-item>
+      <n-form-item label="环境变量">
+        <n-dynamic-input
+          v-model:value="model.env_items"
+          preset="pair"
+          key-placeholder="环境变量名"
+          value-placeholder="环境变量值"
+        />
+      </n-form-item>
     </n-form>
     <n-space justify="center">
       <n-button>创建容器</n-button>
@@ -142,6 +150,7 @@ import {
   useMessage,
   NInputNumber,
   NTag,
+  NDynamicInput,
 } from "naive-ui";
 import { AddSharp, RemoveSharp } from "@vicons/ionicons5";
 import { ref, computed } from "vue";
@@ -178,6 +187,12 @@ const model = ref({
       host_dir: "",
       container_dir: "",
       data_volumes_name: "",
+    },
+  ],
+  env_items: [
+    {
+      key: "",
+      value: "",
     },
   ],
 });

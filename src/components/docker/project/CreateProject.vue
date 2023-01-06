@@ -88,6 +88,7 @@ async function handleClickCreateProjectButton(e: MouseEvent) {
   }
 
   project_info.push({
+    id: 0,
     name: model.value.name,
     remark: model.value.remark,
     project_status: ProjectStatus.Created,

@@ -3,6 +3,7 @@ import { NTag, NButton } from "naive-ui";
 import { h } from "vue";
 
 type RowData = {
+  id: number;
   name: string;
   remark: string;
   project_status: string;
