@@ -3,6 +3,7 @@
   <create-container
     :showModal="showModal"
     :projectID="projectID"
+    :data="container"
     @close="close"
   />
 </template>
@@ -29,6 +30,10 @@ const columns = createColumns({
     projectID.value = rowData.id;
   },
   counter,
+  edit(row: any) {
+    showModal.value = true;
+    projectID.value = row.project_id;
+  },
 });
 
 function rowKey(rowData: RowData) {

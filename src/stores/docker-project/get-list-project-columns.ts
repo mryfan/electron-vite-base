@@ -10,7 +10,7 @@ type RowData = {
   run_status: string;
 };
 
-function expandColumns(counter: any) {
+function expandColumns(counter: any, edit: any) {
   return [
     {
       title: "ID",
@@ -110,6 +110,16 @@ function expandColumns(counter: any) {
             },
             { default: () => "删除" }
           ),
+          h(
+            NButton,
+            {
+              size: "small",
+              onClick: () => {
+                edit(row);
+              },
+            },
+            { default: () => "修改" }
+          ),
         ];
       },
     },
@@ -131,9 +141,11 @@ const containerStore = ref<Array<{ id: number; project_id: number }>>([]);
 const createColumns = ({
   createContainer,
   counter,
+  edit,
 }: {
   createContainer: (rowData: RowData, rowIndex: number) => void;
   counter: any;
+  edit: any;
 }): DataTableColumns<RowData> => {
   return [
     {
@@ -153,7 +165,7 @@ const createColumns = ({
       },
       renderExpand: (rowData) => {
         return h(NDataTable, {
-          columns: expandColumns(counter),
+          columns: expandColumns(counter, edit),
           data: expandData(rowData),
         });
       },

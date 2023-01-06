@@ -3,7 +3,7 @@
     v-model:show="showModal"
     class="custom-card"
     preset="card"
-    title="创建容器"
+    title="保存容器"
     size="huge"
     style="width: 800px; position: fixed; right: 100px; left: 100px; top: 50px"
   >
@@ -130,7 +130,7 @@
       </n-form-item>
     </n-form>
     <n-space justify="center">
-      <n-button @click="submitCreateContainer">创建容器</n-button>
+      <n-button @click="submitCreateContainer">保存容器</n-button>
     </n-space>
   </n-modal>
 </template>
