@@ -155,6 +155,8 @@ import {
 import { AddSharp, RemoveSharp } from "@vicons/ionicons5";
 import { ref, computed, toRaw } from "vue";
 import { getID } from "@/stores/docker-project/save-project-info";
+import { useListReloadCounterStore } from "@/stores/docker-project/external-event-bus";
+const counter = useListReloadCounterStore();
 
 const props = defineProps<{
   showModal: boolean;
@@ -270,6 +272,8 @@ async function submitCreateContainer() {
   }
   container_info.push(toRaw(model.value));
   await window.el_store.set("container_info", container_info);
+  counter.increment();
+  emit("close");
 }
 </script>
 

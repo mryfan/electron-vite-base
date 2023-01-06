@@ -13,6 +13,7 @@ import {
   createColumns,
   createData,
   type RowData,
+  containerStore,
 } from "@/stores/docker-project/get-list-project-columns";
 import { ref, onMounted, watch } from "vue";
 import { useListReloadCounterStore } from "@/stores/docker-project/external-event-bus";
@@ -41,15 +42,17 @@ function close() {
 }
 
 onMounted(() => {
-  createData().then((data) => {
-    tableData.value = data;
+  createData().then(({ project_info, container_info }) => {
+    tableData.value = project_info;
+    containerStore.value = container_info;
   });
 });
 watch(
   () => counter.count,
   () => {
-    createData().then((data) => {
-      tableData.value = data;
+    createData().then(({ project_info, container_info }) => {
+      tableData.value = project_info;
+      containerStore.value = container_info;
     });
   }
 );
