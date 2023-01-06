@@ -23,9 +23,9 @@ const counter = useListReloadCounterStore();
 const tableData = ref<RowData[]>([]);
 
 const columns = createColumns({
-  createContainer(rowData: RowData, rowIndex: number) {
+  createContainer(rowData: RowData) {
     showModal.value = true;
-    projectID.value = rowIndex;
+    projectID.value = rowData.id;
   },
 });
 

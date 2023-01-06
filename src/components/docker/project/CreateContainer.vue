@@ -130,7 +130,7 @@
       </n-form-item>
     </n-form>
     <n-space justify="center">
-      <n-button>创建容器</n-button>
+      <n-button @click="submitCreateContainer">创建容器</n-button>
     </n-space>
   </n-modal>
 </template>
@@ -153,7 +153,9 @@ import {
   NDynamicInput,
 } from "naive-ui";
 import { AddSharp, RemoveSharp } from "@vicons/ionicons5";
-import { ref, computed } from "vue";
+import { ref, computed, toRaw } from "vue";
+import { getID } from "@/stores/docker-project/save-project-info";
+
 const props = defineProps<{
   showModal: boolean;
   projectID: number;
@@ -173,6 +175,8 @@ const showModal = computed({
 //表单相关
 
 const model = ref({
+  id: 0,
+  project_id: props.projectID,
   name: "",
   images: {
     name: "",
@@ -255,6 +259,17 @@ function removeVolumesBinding(index: number) {
   } else {
     model.value.volumes_items.splice(index, 1);
   }
+}
+async function submitCreateContainer() {
+  const ID = await getID("container_info_id_array");
+  model.value.id = ID;
+  model.value.project_id = props.projectID;
+  let container_info = await window.el_store.get("container_info");
+  if (container_info == undefined) {
+    container_info = [];
+  }
+  container_info.push(toRaw(model.value));
+  await window.el_store.set("container_info", container_info);
 }
 </script>
 
