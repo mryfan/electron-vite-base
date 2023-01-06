@@ -2,24 +2,6 @@ import type { DataTableColumns } from "naive-ui";
 import { NTag, NButton } from "naive-ui";
 import { h } from "vue";
 
-const actionArray: Array<{
-  name: string;
-  size: "small";
-}> = [
-  {
-    name: "创建容器",
-    size: "small",
-  },
-  {
-    name: "发布",
-    size: "small",
-  },
-  {
-    name: "删除",
-    size: "small",
-  },
-];
-
 type RowData = {
   name: string;
   remark: string;

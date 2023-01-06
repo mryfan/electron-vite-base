@@ -79,64 +79,50 @@
 
       <n-form-item label="挂载绑定">
         <n-space vertical>
-          <n-input-group
-            v-for="(item, index) in model.volumes_items"
-            :key="index"
-          >
-            <n-select
-              v-model:value="item.binding_type"
-              style="width: 250px"
-              placeholder="绑定方式"
-              :options="volumes_options"
-            />
-            <n-input
-              v-model:value="item.host_dir"
-              style="width: 120px"
-              placeholder="主机目录"
-            >
-              <template #suffix>
-                <n-icon
-                  class="selectDir"
-                  :component="EllipsisHorizontal"
-                  @click="handleClickSelectDir"
-                />
-              </template>
-            </n-input>
-            <n-input
-              v-model:value="item.container_dir"
-              style="width: 120px"
-              placeholder="容器目录"
-            />
-            <n-button-group size="small">
-              <n-button
-                type="default"
-                round
-                @click="removeVolumesBinding(index)"
+          <div v-for="(item, index) in model.volumes_items" :key="index">
+            <n-space>
+              <n-tag type="success">索引:{{ index }}</n-tag>
+              <n-select
+                v-model:value="item.binding_type"
+                placeholder="绑定方式"
+                :options="volumes_options"
+              />
+            </n-space>
+            <n-input-group>
+              <n-input
+                v-model:value="item.host_dir"
+                placeholder="主机目录"
+                style="width: 220px"
               >
-                <template #icon>
-                  <n-icon><remove-sharp /></n-icon>
-                </template>
-              </n-button>
-              <n-button type="default" round @click="addVolumesBinding">
-                <template #icon>
-                  <n-icon><add-sharp /></n-icon>
-                </template>
-              </n-button>
-            </n-button-group>
-          </n-input-group>
+              </n-input>
+              <n-input
+                v-model:value="item.container_dir"
+                placeholder="容器目录"
+                style="width: 220px"
+              />
+              <n-button-group size="small">
+                <n-button
+                  type="default"
+                  round
+                  @click="removeVolumesBinding(index)"
+                >
+                  <template #icon>
+                    <n-icon><remove-sharp /></n-icon>
+                  </template>
+                </n-button>
+                <n-button type="default" round @click="addVolumesBinding">
+                  <template #icon>
+                    <n-icon><add-sharp /></n-icon>
+                  </template>
+                </n-button>
+              </n-button-group>
+            </n-input-group>
+          </div>
         </n-space>
       </n-form-item>
     </n-form>
     <n-space justify="center">
       <n-button>创建容器</n-button>
-      <n-upload
-        :directory="true"
-        v-show="false"
-        @change="handleUploadChange"
-        :default-upload="false"
-      >
-        <n-button ref="uploadDirPath">上传文件</n-button>
-      </n-upload>
     </n-space>
   </n-modal>
 </template>
@@ -155,10 +141,9 @@ import {
   NInputGroup,
   useMessage,
   NInputNumber,
-  NUpload,
-  type UploadFileInfo,
+  NTag,
 } from "naive-ui";
-import { AddSharp, RemoveSharp, EllipsisHorizontal } from "@vicons/ionicons5";
+import { AddSharp, RemoveSharp } from "@vicons/ionicons5";
 import { ref, computed } from "vue";
 const props = defineProps<{
   showModal: boolean;
@@ -255,15 +240,6 @@ function removeVolumesBinding(index: number) {
   } else {
     model.value.volumes_items.splice(index, 1);
   }
-}
-const uploadDirPath = ref<InstanceType<typeof NButton> | null>(null);
-
-function handleClickSelectDir() {
-  uploadDirPath.value?.selfElRef?.click();
-}
-
-function handleUploadChange(data: { fileList: UploadFileInfo[] }) {
-  console.log(data);
 }
 </script>
 
