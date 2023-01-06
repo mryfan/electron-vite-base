@@ -27,10 +27,10 @@ const createColumns = ({
       },
     },
     {
-      title: "序号",
+      title: "ID",
       key: "serial_number",
-      render: (_, index) => {
-        return `${index + 1}`;
+      render: (_) => {
+        return _.id;
       },
     },
     {
@@ -99,8 +99,10 @@ const createColumns = ({
 };
 
 const createData = async (): Promise<RowData[]> => {
-  const project_info: RowData[] = await window.el_store.get("project_info");
-  console.log(project_info);
+  let project_info: RowData[] = await window.el_store.get("project_info");
+  if (project_info == undefined) {
+    project_info = [];
+  }
   return project_info;
 };
 

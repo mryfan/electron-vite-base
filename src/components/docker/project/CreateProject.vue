@@ -45,6 +45,7 @@ import {
 } from "naive-ui";
 import { ProjectStatus, RunStatus } from "@/stores/docker-project/enum-data";
 import type { RowData } from "@/stores/docker-project/get-list-project-columns";
+import { getID } from "@/stores/docker-project/save-project-info";
 const message = useMessage();
 
 const model = ref({
@@ -87,8 +88,9 @@ async function handleClickCreateProjectButton(e: MouseEvent) {
     return;
   }
 
+  const ID = await getID("project_info_id_array");
   project_info.push({
-    id: 0,
+    id: ID,
     name: model.value.name,
     remark: model.value.remark,
     project_status: ProjectStatus.Created,
