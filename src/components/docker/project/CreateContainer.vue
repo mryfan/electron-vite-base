@@ -161,6 +161,7 @@ const counter = useListReloadCounterStore();
 const props = defineProps<{
   showModal: boolean;
   projectID: number;
+  data: any;
 }>();
 const emit = defineEmits(["close"]);
 const messages = useMessage();
@@ -175,8 +176,11 @@ const showModal = computed({
 });
 
 //表单相关
+const model = computed(() => {
+  return props.data.id ? props.data : initModel.value;
+});
 
-const model = ref({
+const initModel = ref({
   id: 0,
   project_id: props.projectID,
   name: "",
@@ -263,15 +267,24 @@ function removeVolumesBinding(index: number) {
   }
 }
 async function submitCreateContainer() {
-  const ID = await getID("container_info_id_array");
-  model.value.id = ID;
-  model.value.project_id = props.projectID;
-  let container_info = await window.el_store.get("container_info");
-  if (container_info == undefined) {
-    container_info = [];
+  if (model.value.id == 0) {
+    const ID = await getID("container_info_id_array");
+    model.value.id = ID;
+    model.value.project_id = props.projectID;
+    let container_info = await window.el_store.get("container_info");
+    if (container_info == undefined) {
+      container_info = [];
+    }
+    container_info.push(toRaw(model.value));
+    await window.el_store.set("container_info", container_info);
+  } else {
+    let containerInfo = await window.el_store.get("container_info");
+    const index = containerInfo.findIndex((item: any) => {
+      return item.id == model.value.id;
+    });
+    containerInfo.splice(index, 1, toRaw(model.value));
+    await window.el_store.set("container_info", containerInfo);
   }
-  container_info.push(toRaw(model.value));
-  await window.el_store.set("container_info", container_info);
   counter.increment();
   emit("close");
 }

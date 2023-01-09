@@ -23,16 +23,19 @@ import CreateContainer from "@/components/docker/project/CreateContainer.vue";
 const counter = useListReloadCounterStore();
 
 const tableData = ref<RowData[]>([]);
+const container = ref({});
 
 const columns = createColumns({
   createContainer(rowData: RowData) {
     showModal.value = true;
     projectID.value = rowData.id;
+    container.value = {};
   },
   counter,
   edit(row: any) {
     showModal.value = true;
     projectID.value = row.project_id;
+    container.value = row;
   },
 });
 
