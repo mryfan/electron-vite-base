@@ -46,6 +46,8 @@ import {
 import { ProjectStatus, RunStatus } from "@/stores/docker-project/enum-data";
 import type { RowData } from "@/stores/docker-project/get-list-project-columns";
 import { getID } from "@/stores/docker-project/save-project-info";
+import md5 from "js-md5";
+
 const message = useMessage();
 
 const model = ref({
@@ -93,6 +95,7 @@ async function handleClickCreateProjectButton(e: MouseEvent) {
     id: ID,
     name: model.value.name,
     remark: model.value.remark,
+    name_md5: md5(model.value.name),
     project_status: ProjectStatus.Created,
     run_status: RunStatus.Stop,
   });
