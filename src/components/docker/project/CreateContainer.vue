@@ -18,10 +18,7 @@
       }"
     >
       <n-form-item label="容器名称">
-        <n-input
-          v-model:value="model.name"
-          placeholder="容器名称(可以不指定，默认是随机)"
-        />
+        <n-input v-model:value="model.name" placeholder="容器名称" />
       </n-form-item>
       <n-form-item label="镜像数据">
         <n-input-group>
