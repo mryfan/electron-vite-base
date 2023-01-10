@@ -1,4 +1,3 @@
-import { path } from "path";
 import { ipcMain } from "electron";
 import Store from "electron-store";
 import fs from "fs";

@@ -1,5 +1,4 @@
 import { contextBridge, ipcRenderer } from "electron";
-import type { Stats } from "fs";
 
 contextBridge.exposeInMainWorld("versions", {
   node: () => process.versions.node,
