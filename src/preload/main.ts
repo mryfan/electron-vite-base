@@ -1,4 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
+import type { Stats } from "fs";
 
 contextBridge.exposeInMainWorld("versions", {
   node: () => process.versions.node,
@@ -22,4 +23,9 @@ contextBridge.exposeInMainWorld("el_store", {
     ipcRenderer.invoke("el_store_set", key, value),
   get: (key: string) => ipcRenderer.invoke("el_store_get", key),
   delete: (key: string) => ipcRenderer.invoke("el_store_delete", key),
+});
+
+//调用fs的方法
+contextBridge.exposeInMainWorld("fs", {
+  stat: (path: string) => ipcRenderer.invoke("fs_stat", path),
 });

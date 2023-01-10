@@ -19,6 +19,9 @@ declare global {
       set: (key: string, value: string | Object | Boolean) => void;
       delete: (key: string) => void;
     };
+    fs: {
+      stat: (path: string) => Promise<{ status: boolean; message: string }>;
+    };
   }
 }
 export {};

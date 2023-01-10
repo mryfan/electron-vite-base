@@ -68,7 +68,7 @@ async function getProjectDir() {
   if (!project_path) {
     projectPath.value = "请先设置项目挂载的根目录";
   } else {
-    projectPath.value = project_path;
+    projectPath.value = "挂载根目录:" + project_path;
   }
 }
 

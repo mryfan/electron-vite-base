@@ -29,9 +29,18 @@
 </template>
 
 <script lang="ts" setup>
-import { NModal, NForm, NFormItem, NInput, NSpace, NButton } from "naive-ui";
-import { computed, ref, onMounted, watch } from "vue";
+import {
+  NModal,
+  NForm,
+  NFormItem,
+  NInput,
+  NSpace,
+  NButton,
+  useMessage,
+} from "naive-ui";
+import { computed, ref, watch } from "vue";
 
+const message = useMessage();
 const props = defineProps({
   showModal: {
     type: Boolean,
@@ -61,12 +70,21 @@ watch(
   async (value) => {
     if (value) {
       model.value.path = await window.el_store.get("project_path");
-      console.log(model.value.path);
     }
   }
 );
 
 async function handleClickSavePathButton() {
+  if (model.value.path == "") {
+    message.warning("目录禁止为空");
+    return;
+  }
+  const re = await window.fs.stat(model.value.path);
+  if (re.status == false) {
+    message.warning(re.message);
+    return;
+  }
+
   await window.el_store.set("project_path", model.value.path);
   emit("close");
   emit("flushPathDir");
