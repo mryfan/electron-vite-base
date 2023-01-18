@@ -73,7 +73,7 @@
           </n-input-group>
         </n-space>
       </n-form-item>
-      <n-form-item label="新挂载绑定">
+      <n-form-item label="挂载绑定">
         <create-container-mount v-model="model.volumes_items" />
       </n-form-item>
       <n-form-item label="环境变量">

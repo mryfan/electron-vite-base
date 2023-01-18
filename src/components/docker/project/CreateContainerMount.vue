@@ -30,7 +30,11 @@
             />
           </td>
           <td v-show="showCopyToHost">
-            <n-checkbox v-model:checked="item.copy_to_host"> </n-checkbox>
+            <n-checkbox
+              v-model:checked="item.copy_to_host"
+              v-show="item.type == 'bind'"
+            >
+            </n-checkbox>
           </td>
           <td>
             <n-button-group size="small">
