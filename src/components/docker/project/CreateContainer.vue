@@ -108,35 +108,23 @@ import {
   NDynamicInput,
 } from "naive-ui";
 import { AddSharp, RemoveSharp } from "@vicons/ionicons5";
-import { ref, computed, toRaw } from "vue";
+import { ref, computed, toRaw, watch } from "vue";
 import { getID } from "@/stores/docker-project/save-project-info";
 import { useListReloadCounterStore } from "@/stores/docker-project/external-event-bus";
+import type { container_info } from "@/stores/docker-project/container-info";
 import CreateContainerMount from "./CreateContainerMount.vue";
 const counter = useListReloadCounterStore();
-
 const props = defineProps<{
   showModal: boolean;
   projectID: number;
-  data: any;
+  containerID: number;
 }>();
-const emit = defineEmits(["close"]);
+const emit = defineEmits<{
+  (e: "update:showModal", newValue: boolean): void;
+}>();
 const messages = useMessage();
 
-const showModal = computed({
-  get() {
-    return props.showModal;
-  },
-  set() {
-    emit("close");
-  },
-});
-
-//表单相关
-const model = computed(() => {
-  return props.data.id ? props.data : initModel.value;
-});
-
-const initModel = ref({
+const baseData: container_info = {
   id: 0,
   project_id: props.projectID,
   name: "",
@@ -145,7 +133,12 @@ const initModel = ref({
     tag: "latest",
   },
   port_items: [
-    { host_ip: "", host_port: null, container_port: null, protocol: "tcp" },
+    {
+      host_ip: "",
+      host_port: null,
+      container_port: null,
+      protocol: "tcp",
+    },
   ],
   volumes_items: [
     { type: "bind", source: "", target: "", copy_to_host: false },
@@ -156,7 +149,67 @@ const initModel = ref({
       value: "",
     },
   ],
-});
+};
+
+const model = ref(baseData);
+const showModal = ref(props.showModal);
+
+// computed({
+//   get: () => {
+//     console.log(props.showModal);
+//     return props.showModal;
+//   },
+//   set: (value) => {
+//     showModal.value = value;
+//     emit("update:showModal", value);
+//   },
+// });
+watch(
+  () => {
+    return props.showModal;
+  },
+  (value) => {
+    showModal.value = value;
+  }
+);
+
+watch(
+  () => {
+    return showModal.value;
+  },
+  async (value) => {
+    emit("update:showModal", value);
+    if (value == true) {
+      if (props.containerID > 0) {
+        const containerInfoArray = await window.el_store.get("container_info");
+        model.value = containerInfoArray.find((item: container_info) => {
+          return item.id == props.containerID;
+        });
+      } else {
+        model.value = baseData;
+      }
+    }
+  }
+);
+
+// watch(
+//   () => {
+//     return props.showModal;
+//   },
+//   async (value) => {
+//     if (value == true) {
+//       if (props.containerID > 0) {
+//         const containerInfoArray = await window.el_store.get("container_info");
+//         model.value = containerInfoArray.find((item: container_info) => {
+//           return item.id == props.containerID;
+//         });
+//       } else {
+//         model.value = baseData;
+//       }
+//     }
+//   }
+// );
+
 const protocol_options = ref([
   {
     label: "tcp",
@@ -207,7 +260,6 @@ async function submitCreateContainer() {
     await window.el_store.set("container_info", containerInfo);
   }
   counter.increment();
-  emit("close");
 }
 </script>
 
