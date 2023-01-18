@@ -108,7 +108,7 @@ import {
   NDynamicInput,
 } from "naive-ui";
 import { AddSharp, RemoveSharp } from "@vicons/ionicons5";
-import { ref, computed, toRaw, watch } from "vue";
+import { ref, toRaw, watch } from "vue";
 import { getID } from "@/stores/docker-project/save-project-info";
 import { useListReloadCounterStore } from "@/stores/docker-project/external-event-bus";
 import type { container_info } from "@/stores/docker-project/container-info";
@@ -152,7 +152,7 @@ const baseData: container_info = {
 };
 
 const model = ref(baseData);
-const showModal = ref(props.showModal);
+const showModal = ref(false);
 
 watch(
   () => {
@@ -232,6 +232,7 @@ async function submitCreateContainer() {
     await window.el_store.set("container_info", containerInfo);
   }
   counter.increment();
+  showModal.value = false;
 }
 </script>
 
