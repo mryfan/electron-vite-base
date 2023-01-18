@@ -1,11 +1,6 @@
-interface mountType223232 {
-  label: string;
-  value: string;
-  disable?: boolean;
-  isShowSourceField?: boolean;
-}
+import type { SelectOption } from "naive-ui";
 
-const mountTypeData1111: Array<mountType223232> = [
+export const bindOptions: Array<SelectOption> = [
   {
     label: "bind",
     value: "bind",
@@ -17,12 +12,12 @@ const mountTypeData1111: Array<mountType223232> = [
   {
     label: "tmpfs",
     value: "tmpfs",
-    disable: true,
+    disabled: true,
   },
   {
     label: "npipe",
     value: "npipe",
-    disable: true,
+    disabled: true,
   },
 ];
 
@@ -55,6 +50,7 @@ interface volumesType {
   type: mountType;
   source: string;
   target: string;
+  copy_to_host: boolean;
   read_only?: boolean;
   bind?: bindOptionsType;
   volume?: volumeOptionsType;

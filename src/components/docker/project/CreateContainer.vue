@@ -147,7 +147,9 @@ const initModel = ref({
   port_items: [
     { host_ip: "", host_port: null, container_port: null, protocol: "tcp" },
   ],
-  volumes_items: [{ type: "bind", source: "", target: "" }],
+  volumes_items: [
+    { type: "bind", source: "", target: "", copy_to_host: false },
+  ],
   env_items: [
     {
       key: "",

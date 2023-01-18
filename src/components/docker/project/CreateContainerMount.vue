@@ -1,11 +1,11 @@
 <template>
-  <!-- <n-data-table :columns="columns" :data="data" :bordered="true" /> -->
   <n-table>
     <thead>
       <tr>
-        <th>挂载类型</th>
+        <th style="width: 100px">挂载类型</th>
         <th>挂载源</th>
         <th>容器路径</th>
+        <th v-show="showCopyToHost">容器复制到主机</th>
         <th>操作</th>
       </tr>
     </thead>
@@ -28,6 +28,9 @@
               type="text"
               placeholder="容器路径"
             />
+          </td>
+          <td v-show="showCopyToHost">
+            <n-checkbox v-model:checked="item.copy_to_host"> </n-checkbox>
           </td>
           <td>
             <n-button-group size="small">
@@ -61,10 +64,12 @@ import {
   NButtonGroup,
   NSelect,
   NInput,
+  NCheckbox,
 } from "naive-ui";
 import { AddSharp, RemoveSharp } from "@vicons/ionicons5";
 import type { volumesType } from "@/stores/docker-project/container-volumes";
-import { ref } from "vue";
+import { bindOptions } from "@/stores/docker-project/container-volumes";
+import { ref, computed, watch } from "vue";
 
 const props = defineProps<{
   modelValue: Array<volumesType>;
@@ -74,40 +79,27 @@ const emit = defineEmits<{
 }>();
 
 const data = ref(props.modelValue);
-const tmp: volumesType = {
-  type: "bind",
-  source: "",
-  target: "",
-};
 function addVolumesBinding() {
-  data.value.push(tmp);
-  emit("update:modelValue", data.value);
+  data.value.push({
+    type: "bind",
+    source: "",
+    target: "",
+    copy_to_host: false,
+  });
 }
 function removeVolumesBinding(index: number) {
   data.value.splice(index, 1);
-  emit("update:modelValue", data.value);
 }
 
-const bindOptions = ref([
-  {
-    label: "bind",
-    value: "bind",
-  },
-  {
-    label: "volume",
-    value: "volume",
-  },
-  {
-    label: "tmpfs",
-    value: "tmpfs",
-    disabled: true,
-  },
-  {
-    label: "npipe",
-    value: "npipe",
-    disabled: true,
-  },
-]);
+watch(data.value, () => {
+  emit("update:modelValue", data.value);
+});
+
+const showCopyToHost = computed(() => {
+  return data.value.some((item) => {
+    return item.type == "bind";
+  });
+});
 </script>
 
 <style lang="scss" scoped></style>
