@@ -154,21 +154,11 @@ const baseData: container_info = {
 const model = ref(baseData);
 const showModal = ref(props.showModal);
 
-// computed({
-//   get: () => {
-//     console.log(props.showModal);
-//     return props.showModal;
-//   },
-//   set: (value) => {
-//     showModal.value = value;
-//     emit("update:showModal", value);
-//   },
-// });
 watch(
   () => {
     return props.showModal;
   },
-  (value) => {
+  async (value) => {
     showModal.value = value;
   }
 );
@@ -191,24 +181,6 @@ watch(
     }
   }
 );
-
-// watch(
-//   () => {
-//     return props.showModal;
-//   },
-//   async (value) => {
-//     if (value == true) {
-//       if (props.containerID > 0) {
-//         const containerInfoArray = await window.el_store.get("container_info");
-//         model.value = containerInfoArray.find((item: container_info) => {
-//           return item.id == props.containerID;
-//         });
-//       } else {
-//         model.value = baseData;
-//       }
-//     }
-//   }
-// );
 
 const protocol_options = ref([
   {
