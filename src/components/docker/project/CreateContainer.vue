@@ -14,7 +14,7 @@
       require-mark-placement="right-hanging"
       size="small"
       :style="{
-        maxWidth: '640px',
+        maxWidth: '740px',
       }"
     >
       <n-form-item label="容器名称">

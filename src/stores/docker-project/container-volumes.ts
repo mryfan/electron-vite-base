@@ -18,7 +18,6 @@ const mountTypeData1111: Array<mountType223232> = [
     label: "tmpfs",
     value: "tmpfs",
     disable: true,
-    isShowSourceField: false,
   },
   {
     label: "npipe",

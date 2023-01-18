@@ -12,9 +12,23 @@
     <tbody>
       <template v-for="(item, index) in data" :key="index">
         <tr>
-          <td>{{ item.type }}</td>
-          <td>{{ item.source }}</td>
-          <td>{{ item.target }}</td>
+          <td>
+            <n-select v-model:value="item.type" :options="bindOptions" />
+          </td>
+          <td>
+            <n-input
+              v-model:value="item.source"
+              type="text"
+              placeholder="挂载源"
+            />
+          </td>
+          <td>
+            <n-input
+              v-model:value="item.target"
+              type="text"
+              placeholder="容器路径"
+            />
+          </td>
           <td>
             <n-button-group size="small">
               <n-button
@@ -40,7 +54,14 @@
 </template>
 
 <script lang="ts" setup>
-import { NButton, NTable, NIcon, NButtonGroup } from "naive-ui";
+import {
+  NButton,
+  NTable,
+  NIcon,
+  NButtonGroup,
+  NSelect,
+  NInput,
+} from "naive-ui";
 import { AddSharp, RemoveSharp } from "@vicons/ionicons5";
 import type { volumesType } from "@/stores/docker-project/container-volumes";
 import { ref } from "vue";
@@ -66,6 +87,27 @@ function removeVolumesBinding(index: number) {
   data.value.splice(index, 1);
   emit("update:modelValue", data.value);
 }
+
+const bindOptions = ref([
+  {
+    label: "bind",
+    value: "bind",
+  },
+  {
+    label: "volume",
+    value: "volume",
+  },
+  {
+    label: "tmpfs",
+    value: "tmpfs",
+    disabled: true,
+  },
+  {
+    label: "npipe",
+    value: "npipe",
+    disabled: true,
+  },
+]);
 </script>
 
 <style lang="scss" scoped></style>
