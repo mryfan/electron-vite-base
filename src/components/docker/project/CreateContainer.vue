@@ -73,49 +73,8 @@
           </n-input-group>
         </n-space>
       </n-form-item>
-
-      <n-form-item label="挂载绑定">
-        <n-space vertical>
-          <div v-for="(item, index) in model.volumes_items" :key="index">
-            <n-space>
-              <n-tag type="success">索引:{{ index }}</n-tag>
-              <n-select
-                v-model:value="item.binding_type"
-                placeholder="绑定方式"
-                :options="volumes_options"
-              />
-            </n-space>
-            <n-input-group>
-              <n-input
-                v-model:value="item.host_dir"
-                placeholder="主机目录"
-                style="width: 220px"
-              >
-              </n-input>
-              <n-input
-                v-model:value="item.container_dir"
-                placeholder="容器目录"
-                style="width: 220px"
-              />
-              <n-button-group size="small">
-                <n-button
-                  type="default"
-                  round
-                  @click="removeVolumesBinding(index)"
-                >
-                  <template #icon>
-                    <n-icon><remove-sharp /></n-icon>
-                  </template>
-                </n-button>
-                <n-button type="default" round @click="addVolumesBinding">
-                  <template #icon>
-                    <n-icon><add-sharp /></n-icon>
-                  </template>
-                </n-button>
-              </n-button-group>
-            </n-input-group>
-          </div>
-        </n-space>
+      <n-form-item label="新挂载绑定">
+        <create-container-mount v-model="model.volumes_items" />
       </n-form-item>
       <n-form-item label="环境变量">
         <n-dynamic-input
@@ -146,13 +105,13 @@ import {
   NInputGroup,
   useMessage,
   NInputNumber,
-  NTag,
   NDynamicInput,
 } from "naive-ui";
 import { AddSharp, RemoveSharp } from "@vicons/ionicons5";
 import { ref, computed, toRaw } from "vue";
 import { getID } from "@/stores/docker-project/save-project-info";
 import { useListReloadCounterStore } from "@/stores/docker-project/external-event-bus";
+import CreateContainerMount from "./CreateContainerMount.vue";
 const counter = useListReloadCounterStore();
 
 const props = defineProps<{
@@ -188,14 +147,7 @@ const initModel = ref({
   port_items: [
     { host_ip: "", host_port: null, container_port: null, protocol: "tcp" },
   ],
-  volumes_items: [
-    {
-      binding_type: "host_to_container",
-      host_dir: "",
-      container_dir: "",
-      data_volumes_name: "",
-    },
-  ],
+  volumes_items: [{ type: "bind", source: "", target: "" }],
   env_items: [
     {
       key: "",
@@ -218,21 +170,6 @@ const protocol_options = ref([
   },
 ]);
 
-const volumes_options = ref([
-  {
-    label: "主机的目录绑定到容器",
-    value: "host_to_container",
-  },
-  {
-    label: "容器里面的文件或目录绑定到主机",
-    value: "container_to_host",
-  },
-  {
-    label: "数据卷的挂载",
-    value: "data_volumes",
-  },
-]);
-
 function addPortBinding() {
   model.value.port_items.push({
     host_ip: "",
@@ -246,21 +183,6 @@ function removePortBinding(index: number) {
     messages.info("不允许删除");
   } else {
     model.value.port_items.splice(index, 1);
-  }
-}
-function addVolumesBinding() {
-  model.value.volumes_items.push({
-    binding_type: "host_to_container",
-    host_dir: "",
-    container_dir: "",
-    data_volumes_name: "",
-  });
-}
-function removeVolumesBinding(index: number) {
-  if (model.value.volumes_items.length <= 1) {
-    messages.info("不允许删除");
-  } else {
-    model.value.volumes_items.splice(index, 1);
   }
 }
 async function submitCreateContainer() {
