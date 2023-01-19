@@ -144,10 +144,12 @@ const createColumns = ({
   createContainer,
   counter,
   edit,
+  generateCompose,
 }: {
   createContainer: (rowData: RowData, rowIndex: number) => void;
   counter: any;
   edit: any;
+  generateCompose: (rowData: RowData, rowIndex: number) => void;
 }): DataTableColumns<RowData> => {
   return [
     {
@@ -241,6 +243,14 @@ const createColumns = ({
               onClick: () => createContainer(row, rowIndex),
             },
             { default: () => "创建容器" }
+          ),
+          h(
+            NButton,
+            {
+              size: "small",
+              onClick: () => generateCompose(row, rowIndex),
+            },
+            { default: () => "生成compose文件" }
           ),
         ];
       },

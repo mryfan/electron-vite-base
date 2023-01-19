@@ -39,6 +39,9 @@ const columns = createColumns({
     projectID.value = row.project_id;
     containerID.value = row.id;
   },
+  generateCompose(rowData: RowData) {
+    console.log(rowData);
+  },
 });
 
 function rowKey(rowData: RowData) {
