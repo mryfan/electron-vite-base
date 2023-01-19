@@ -79,11 +79,11 @@ async function handleClickSavePathButton() {
     message.warning("目录禁止为空");
     return;
   }
-  const re = await window.fs.stat(model.value.path);
-  if (re.status == false) {
-    message.warning(re.message);
-    return;
-  }
+  // const re = await window.fs.stat(model.value.path);
+  // if (re.status == false) {
+  //   message.warning(re.message);
+  //   return;
+  // }
 
   await window.el_store.set("project_path", model.value.path);
   emit("close");

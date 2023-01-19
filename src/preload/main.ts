@@ -1,4 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
+import type { createContainerRequestBody } from "@/stores/docker-project/create-compose-file";
 
 contextBridge.exposeInMainWorld("versions", {
   node: () => process.versions.node,
@@ -27,4 +28,10 @@ contextBridge.exposeInMainWorld("el_store", {
 //调用fs的方法
 contextBridge.exposeInMainWorld("fs", {
   stat: (path: string) => ipcRenderer.invoke("fs_stat", path),
+});
+
+//调用docker  api的方法
+contextBridge.exposeInMainWorld("docker", {
+  createContainer: (requestBody: createContainerRequestBody) =>
+    ipcRenderer.invoke("docker_create_container", requestBody),
 });

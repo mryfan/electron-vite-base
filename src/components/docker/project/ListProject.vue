@@ -46,7 +46,6 @@ const columns = createColumns({
     containerID.value = row.id;
   },
   generateCompose(rowData: RowData) {
-    console.log(rowData);
     createComposeFileShowModal.value = true;
     projectID.value = rowData.id;
   },
