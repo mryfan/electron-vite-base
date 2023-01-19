@@ -5,6 +5,7 @@ import { h, ref } from "vue";
 type RowData = {
   id: number;
   name: string;
+  dir_name: string;
   name_md5: string;
   remark: string;
   project_status: string;
@@ -181,6 +182,10 @@ const createColumns = ({
     {
       title: "项目名称",
       key: "name",
+    },
+    {
+      title: "目录名称",
+      key: "dir_name",
     },
     {
       title: "项目备注",

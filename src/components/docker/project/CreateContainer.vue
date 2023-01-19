@@ -18,7 +18,10 @@
       }"
     >
       <n-form-item label="容器名称">
-        <n-input v-model:value="model.name" placeholder="容器名称" />
+        <n-input
+          v-model:value="model.name"
+          placeholder="容器名称(不建议填写)"
+        />
       </n-form-item>
       <n-form-item label="镜像数据">
         <n-input-group>
