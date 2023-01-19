@@ -5,6 +5,7 @@
     :projectID="projectID"
     :containerID="containerID"
   />
+  <create-compose-file v-model:showModal="createComposeFileShowModal" />
 </template>
 
 <script lang="ts" setup>
@@ -18,9 +19,11 @@ import {
 import { ref, onMounted, watch } from "vue";
 import { useListReloadCounterStore } from "@/stores/docker-project/external-event-bus";
 import CreateContainer from "@/components/docker/project/CreateContainer.vue";
+import CreateComposeFile from "@/components/docker/project/CreateComposeFile.vue";
 
 //创建容器相关的操作
 const showModal = ref(false);
+const createComposeFileShowModal = ref(false);
 const projectID = ref(0);
 const containerID = ref(0);
 const counter = useListReloadCounterStore();
@@ -41,6 +44,7 @@ const columns = createColumns({
   },
   generateCompose(rowData: RowData) {
     console.log(rowData);
+    createComposeFileShowModal.value = true;
   },
 });
 
