@@ -1,10 +1,13 @@
 <template>
   <n-data-table :columns="columns" :data="tableData" :row-key="rowKey" />
   <create-container
-    :showModal="showModal"
+    v-model:showModal="showModal"
     :projectID="projectID"
-    :data="container"
-    @close="close"
+    :containerID="containerID"
+  />
+  <create-compose-file
+    v-model:showModal="createComposeFileShowModal"
+    :projectID="projectID"
   />
 </template>
 
@@ -19,35 +22,37 @@ import {
 import { ref, onMounted, watch } from "vue";
 import { useListReloadCounterStore } from "@/stores/docker-project/external-event-bus";
 import CreateContainer from "@/components/docker/project/CreateContainer.vue";
+import CreateComposeFile from "@/components/docker/project/CreateComposeFile.vue";
 
+//创建容器相关的操作
+const showModal = ref(false);
+const createComposeFileShowModal = ref(false);
+const projectID = ref(0);
+const containerID = ref(0);
 const counter = useListReloadCounterStore();
 
 const tableData = ref<RowData[]>([]);
-const container = ref({});
 
 const columns = createColumns({
   createContainer(rowData: RowData) {
     showModal.value = true;
     projectID.value = rowData.id;
-    container.value = {};
+    containerID.value = 0;
   },
   counter,
   edit(row: any) {
     showModal.value = true;
     projectID.value = row.project_id;
-    container.value = row;
+    containerID.value = row.id;
+  },
+  generateCompose(rowData: RowData) {
+    createComposeFileShowModal.value = true;
+    projectID.value = rowData.id;
   },
 });
 
 function rowKey(rowData: RowData) {
   return rowData.name;
-}
-
-//创建容器相关的操作
-const showModal = ref(false);
-const projectID = ref(0);
-function close() {
-  showModal.value = false;
 }
 
 onMounted(() => {

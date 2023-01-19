@@ -1,3 +1,4 @@
+import type { createContainerRequestBody } from "@/stores/docker-project/create-compose-file";
 declare global {
   //electron 的声明文件，用于提示
   interface Window {
@@ -18,6 +19,14 @@ declare global {
       get: (key: string) => Promise<string | Object | Boolean | Array>;
       set: (key: string, value: string | Object | Boolean) => void;
       delete: (key: string) => void;
+    };
+    fs: {
+      stat: (path: string) => Promise<{ status: boolean; message: string }>;
+    };
+    docker: {
+      createContainer: (
+        requestBody: createContainerRequestBody
+      ) => Promise<{ result: boolean; data?: string }>;
     };
   }
 }

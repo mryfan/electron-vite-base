@@ -12,7 +12,13 @@
     }"
   >
     <n-form-item label="项目名称" path="name">
-      <n-input v-model:value="model.name" placeholder="项目名称" />
+      <n-input v-model:value="model.name" placeholder="项目名称(必填)" />
+    </n-form-item>
+    <n-form-item label="项目目录" path="dir_name">
+      <n-input
+        v-model:value="model.dir_name"
+        placeholder="相对于根目录的子目录名称,必须英文(必填)"
+      />
     </n-form-item>
     <n-form-item label="项目备注" path="remark">
       <n-input
@@ -46,11 +52,19 @@ import {
 import { ProjectStatus, RunStatus } from "@/stores/docker-project/enum-data";
 import type { RowData } from "@/stores/docker-project/get-list-project-columns";
 import { getID } from "@/stores/docker-project/save-project-info";
+import md5 from "js-md5";
+
 const message = useMessage();
 
-const model = ref({
+const model = ref<RowData>({
+  id: 0,
   name: "",
+  dir_name: "",
+  name_md5: "",
   remark: "",
+  project_path: "",
+  project_status: "",
+  run_status: "",
 });
 const emit = defineEmits(["closeModal"]);
 const rules: FormRules = {
@@ -58,6 +72,13 @@ const rules: FormRules = {
     {
       required: true,
       message: "请输入项目名称",
+      trigger: ["blur", "input"],
+    },
+  ],
+  dir_name: [
+    {
+      required: true,
+      message: "请输入项目目录",
       trigger: ["blur", "input"],
     },
   ],
@@ -89,10 +110,20 @@ async function handleClickCreateProjectButton(e: MouseEvent) {
   }
 
   const ID = await getID("project_info_id_array");
+  const projectPath: string = await window.el_store.get("project_path");
+
+  if (!projectPath) {
+    message.error("项目挂载的根目录为空");
+    return;
+  }
+
   project_info.push({
     id: ID,
     name: model.value.name,
+    dir_name: model.value.dir_name,
     remark: model.value.remark,
+    name_md5: md5(model.value.name),
+    project_path: projectPath,
     project_status: ProjectStatus.Created,
     run_status: RunStatus.Stop,
   });

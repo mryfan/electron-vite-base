@@ -5,7 +5,10 @@ import { h, ref } from "vue";
 type RowData = {
   id: number;
   name: string;
+  dir_name: string;
+  name_md5: string;
   remark: string;
+  project_path: string;
   project_status: string;
   run_status: string;
 };
@@ -142,10 +145,12 @@ const createColumns = ({
   createContainer,
   counter,
   edit,
+  generateCompose,
 }: {
   createContainer: (rowData: RowData, rowIndex: number) => void;
   counter: any;
   edit: any;
+  generateCompose: (rowData: RowData, rowIndex: number) => void;
 }): DataTableColumns<RowData> => {
   return [
     {
@@ -180,6 +185,10 @@ const createColumns = ({
     {
       title: "项目名称",
       key: "name",
+    },
+    {
+      title: "目录名称",
+      key: "dir_name",
     },
     {
       title: "项目备注",
@@ -235,6 +244,14 @@ const createColumns = ({
               onClick: () => createContainer(row, rowIndex),
             },
             { default: () => "创建容器" }
+          ),
+          h(
+            NButton,
+            {
+              size: "small",
+              onClick: () => generateCompose(row, rowIndex),
+            },
+            { default: () => "生成compose文件" }
           ),
         ];
       },

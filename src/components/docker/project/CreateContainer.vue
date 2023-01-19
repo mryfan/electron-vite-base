@@ -14,13 +14,13 @@
       require-mark-placement="right-hanging"
       size="small"
       :style="{
-        maxWidth: '640px',
+        maxWidth: '740px',
       }"
     >
       <n-form-item label="容器名称">
         <n-input
           v-model:value="model.name"
-          placeholder="容器名称(可以不指定，默认是随机)"
+          placeholder="容器名称(不建议填写)"
         />
       </n-form-item>
       <n-form-item label="镜像数据">
@@ -76,49 +76,8 @@
           </n-input-group>
         </n-space>
       </n-form-item>
-
       <n-form-item label="挂载绑定">
-        <n-space vertical>
-          <div v-for="(item, index) in model.volumes_items" :key="index">
-            <n-space>
-              <n-tag type="success">索引:{{ index }}</n-tag>
-              <n-select
-                v-model:value="item.binding_type"
-                placeholder="绑定方式"
-                :options="volumes_options"
-              />
-            </n-space>
-            <n-input-group>
-              <n-input
-                v-model:value="item.host_dir"
-                placeholder="主机目录"
-                style="width: 220px"
-              >
-              </n-input>
-              <n-input
-                v-model:value="item.container_dir"
-                placeholder="容器目录"
-                style="width: 220px"
-              />
-              <n-button-group size="small">
-                <n-button
-                  type="default"
-                  round
-                  @click="removeVolumesBinding(index)"
-                >
-                  <template #icon>
-                    <n-icon><remove-sharp /></n-icon>
-                  </template>
-                </n-button>
-                <n-button type="default" round @click="addVolumesBinding">
-                  <template #icon>
-                    <n-icon><add-sharp /></n-icon>
-                  </template>
-                </n-button>
-              </n-button-group>
-            </n-input-group>
-          </div>
-        </n-space>
+        <create-container-mount v-model="model.volumes_items" />
       </n-form-item>
       <n-form-item label="环境变量">
         <n-dynamic-input
@@ -149,38 +108,26 @@ import {
   NInputGroup,
   useMessage,
   NInputNumber,
-  NTag,
   NDynamicInput,
 } from "naive-ui";
 import { AddSharp, RemoveSharp } from "@vicons/ionicons5";
-import { ref, computed, toRaw } from "vue";
+import { ref, toRaw, watch } from "vue";
 import { getID } from "@/stores/docker-project/save-project-info";
 import { useListReloadCounterStore } from "@/stores/docker-project/external-event-bus";
+import type { container_info } from "@/stores/docker-project/container-info";
+import CreateContainerMount from "./CreateContainerMount.vue";
 const counter = useListReloadCounterStore();
-
 const props = defineProps<{
   showModal: boolean;
   projectID: number;
-  data: any;
+  containerID: number;
 }>();
-const emit = defineEmits(["close"]);
+const emit = defineEmits<{
+  (e: "update:showModal", newValue: boolean): void;
+}>();
 const messages = useMessage();
 
-const showModal = computed({
-  get() {
-    return props.showModal;
-  },
-  set() {
-    emit("close");
-  },
-});
-
-//表单相关
-const model = computed(() => {
-  return props.data.id ? props.data : initModel.value;
-});
-
-const initModel = ref({
+const baseData: container_info = {
   id: 0,
   project_id: props.projectID,
   name: "",
@@ -189,15 +136,15 @@ const initModel = ref({
     tag: "latest",
   },
   port_items: [
-    { host_ip: "", host_port: null, container_port: null, protocol: "tcp" },
+    {
+      host_ip: "",
+      host_port: null,
+      container_port: null,
+      protocol: "tcp",
+    },
   ],
   volumes_items: [
-    {
-      binding_type: "host_to_container",
-      host_dir: "",
-      container_dir: "",
-      data_volumes_name: "",
-    },
+    { type: "bind", source: "", target: "", copy_to_host: false },
   ],
   env_items: [
     {
@@ -205,7 +152,39 @@ const initModel = ref({
       value: "",
     },
   ],
-});
+};
+
+const model = ref(baseData);
+const showModal = ref(false);
+
+watch(
+  () => {
+    return props.showModal;
+  },
+  async (value) => {
+    showModal.value = value;
+  }
+);
+
+watch(
+  () => {
+    return showModal.value;
+  },
+  async (value) => {
+    emit("update:showModal", value);
+    if (value == true) {
+      if (props.containerID > 0) {
+        const containerInfoArray = await window.el_store.get("container_info");
+        model.value = containerInfoArray.find((item: container_info) => {
+          return item.id == props.containerID;
+        });
+      } else {
+        model.value = baseData;
+      }
+    }
+  }
+);
+
 const protocol_options = ref([
   {
     label: "tcp",
@@ -218,21 +197,6 @@ const protocol_options = ref([
   {
     label: "sctp",
     value: "sctp",
-  },
-]);
-
-const volumes_options = ref([
-  {
-    label: "主机的目录绑定到容器",
-    value: "host_to_container",
-  },
-  {
-    label: "容器里面的文件或目录绑定到主机",
-    value: "container_to_host",
-  },
-  {
-    label: "数据卷的挂载",
-    value: "data_volumes",
   },
 ]);
 
@@ -249,21 +213,6 @@ function removePortBinding(index: number) {
     messages.info("不允许删除");
   } else {
     model.value.port_items.splice(index, 1);
-  }
-}
-function addVolumesBinding() {
-  model.value.volumes_items.push({
-    binding_type: "host_to_container",
-    host_dir: "",
-    container_dir: "",
-    data_volumes_name: "",
-  });
-}
-function removeVolumesBinding(index: number) {
-  if (model.value.volumes_items.length <= 1) {
-    messages.info("不允许删除");
-  } else {
-    model.value.volumes_items.splice(index, 1);
   }
 }
 async function submitCreateContainer() {
@@ -286,7 +235,7 @@ async function submitCreateContainer() {
     await window.el_store.set("container_info", containerInfo);
   }
   counter.increment();
-  emit("close");
+  showModal.value = false;
 }
 </script>
 
