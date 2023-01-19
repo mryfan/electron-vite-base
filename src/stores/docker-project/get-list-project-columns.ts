@@ -8,6 +8,7 @@ type RowData = {
   dir_name: string;
   name_md5: string;
   remark: string;
+  project_path: string;
   project_status: string;
   run_status: string;
 };

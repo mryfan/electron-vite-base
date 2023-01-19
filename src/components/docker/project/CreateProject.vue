@@ -62,6 +62,7 @@ const model = ref<RowData>({
   dir_name: "",
   name_md5: "",
   remark: "",
+  project_path: "",
   project_status: "",
   run_status: "",
 });
@@ -109,12 +110,20 @@ async function handleClickCreateProjectButton(e: MouseEvent) {
   }
 
   const ID = await getID("project_info_id_array");
+  const projectPath: string = await window.el_store.get("project_path");
+
+  if (!projectPath) {
+    message.error("项目挂载的根目录为空");
+    return;
+  }
+
   project_info.push({
     id: ID,
     name: model.value.name,
     dir_name: model.value.dir_name,
     remark: model.value.remark,
     name_md5: md5(model.value.name),
+    project_path: projectPath,
     project_status: ProjectStatus.Created,
     run_status: RunStatus.Stop,
   });

@@ -5,7 +5,10 @@
     :projectID="projectID"
     :containerID="containerID"
   />
-  <create-compose-file v-model:showModal="createComposeFileShowModal" />
+  <create-compose-file
+    v-model:showModal="createComposeFileShowModal"
+    :projectID="projectID"
+  />
 </template>
 
 <script lang="ts" setup>
@@ -45,6 +48,7 @@ const columns = createColumns({
   generateCompose(rowData: RowData) {
     console.log(rowData);
     createComposeFileShowModal.value = true;
+    projectID.value = rowData.id;
   },
 });
 
