@@ -9,7 +9,7 @@ app.disableHardwareAcceleration();
 
 const createWindow = () => {
   const mainWindow = new BrowserWindow({
-    width: 1200,
+    width: 1470,
     height: 800,
     webPreferences: {
       preload: path.join(__dirname, "../preload/main.js"),
