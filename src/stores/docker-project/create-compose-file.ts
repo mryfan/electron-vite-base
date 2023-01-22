@@ -5,6 +5,11 @@ export interface createContainerRequestBody {
   Image: string;
 }
 
+export interface inspectImageParamsType {
+  image_name: string;
+  image_tag: string;
+}
+
 interface hostAndContainerPathMap {
   host_path: string;
   container_path: string;
@@ -59,20 +64,10 @@ function checkProjectAndContainerInfo(
       }
     });
   });
-
-  //检查并下载镜像
-  checkAndDownloadImages(containerInfoArray);
-}
-
-//检查并下载镜像
-function checkAndDownloadImages(containerInfoArray: Array<container_info>) {
-  containerInfoArray.forEach((item) => {
-
-  });
 }
 
 /**
- * 基础准备，创建目录，检测是否存在等
+ * 基础准备，创建目录
  * @param params
  */
 async function baseReserve(
@@ -116,9 +111,10 @@ async function baseReserve(
   }
 }
 
-export async function createComposeFile(projectID: number) {
+export async function getProjectAndContainerInfo(projectID: number) {
   const { projectInfo, containerInfoArray } =
     await getProjectInfoAndContainerInfoArray(projectID);
   checkProjectAndContainerInfo(projectInfo as RowData, containerInfoArray);
   await baseReserve(projectInfo as RowData, containerInfoArray);
+  return { projectInfo, containerInfoArray };
 }

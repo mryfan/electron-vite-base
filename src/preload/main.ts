@@ -1,5 +1,8 @@
 import { contextBridge, ipcRenderer } from "electron";
-import type { createContainerRequestBody } from "@/stores/docker-project/create-compose-file";
+import type {
+  createContainerRequestBody,
+  inspectImageParamsType,
+} from "@/stores/docker-project/create-compose-file";
 
 contextBridge.exposeInMainWorld("versions", {
   node: () => process.versions.node,
@@ -34,4 +37,6 @@ contextBridge.exposeInMainWorld("fs", {
 contextBridge.exposeInMainWorld("docker", {
   createContainer: (requestBody: createContainerRequestBody) =>
     ipcRenderer.invoke("docker_create_container", requestBody),
+  inspectImage: (requestBody: inspectImageParamsType) =>
+    ipcRenderer.invoke("docker_inspect_image", requestBody),
 });

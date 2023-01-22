@@ -1,4 +1,7 @@
-import type { createContainerRequestBody } from "@/stores/docker-project/create-compose-file";
+import type {
+  createContainerRequestBody,
+  inspectImageParamsType,
+} from "@/stores/docker-project/create-compose-file";
 declare global {
   //electron 的声明文件，用于提示
   interface Window {
@@ -13,7 +16,7 @@ declare global {
       image_create: (
         imageName: string,
         imageTag: string
-      ) => Promise<{ data: { results: any[] } }>; //创建镜像
+      ) => Promise<{ result: boolean; data: string; sign: "end" | "chunk" }>; //创建镜像
     };
     el_store: {
       get: (key: string) => Promise<string | Object | Boolean | Array>;
@@ -24,8 +27,13 @@ declare global {
       stat: (path: string) => Promise<{ status: boolean; message: string }>;
     };
     docker: {
+      //创建容器
       createContainer: (
         requestBody: createContainerRequestBody
+      ) => Promise<{ result: boolean; data?: string }>;
+      //检查镜像
+      inspectImage: (
+        requestBody: inspectImageParamsType
       ) => Promise<{ result: boolean; data?: string }>;
     };
   }

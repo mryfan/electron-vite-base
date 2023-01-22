@@ -20,12 +20,12 @@ function sendHttpRequest(
       res.setEncoding(encoding);
       res.on("data", function (chunk) {
         console.log(chunk);
-        resolve({ result: true, data: chunk });
+        resolve({ result: true, data: chunk, sign: "chunk" });
         data += chunk;
       });
 
       res.on("end", function () {
-        resolve({ result: true, data });
+        resolve({ result: true, data, sign: "end" });
       });
     });
 
@@ -40,9 +40,6 @@ export async function handle(
   imageName: string,
   imageTag: string
 ) {
-  console.log("imageName", imageName);
-  console.log("imageTag", imageTag);
   const res = sendHttpRequest(imageName, imageTag);
-  console.log(111, res);
   return res;
 }
