@@ -2,6 +2,7 @@ import type {
   createContainerRequestBody,
   inspectImageParamsType,
 } from "@/stores/docker-project/create-compose-file";
+import type { IpcRendererEvent } from "electron";
 declare global {
   //electron 的声明文件，用于提示
   interface Window {
@@ -16,7 +17,7 @@ declare global {
       image_create: (
         imageName: string,
         imageTag: string
-      ) => Promise<{ result: boolean; data: string; sign: "end" | "chunk" }>; //创建镜像
+      ) => Promise<{ result: boolean; data: string }>; //创建镜像
     };
     el_store: {
       get: (key: string) => Promise<string | Object | Boolean | Array>;
@@ -35,6 +36,11 @@ declare global {
       inspectImage: (
         requestBody: inspectImageParamsType
       ) => Promise<{ result: boolean; data?: string }>;
+    };
+    main_send_to_render: {
+      onUpdateImageCreateLog: (
+        callback: (event: IpcRendererEvent, value: string) => void
+      ) => void;
     };
   }
 }

@@ -1,4 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
+import type { IpcRendererEvent } from "electron";
 import type {
   createContainerRequestBody,
   inspectImageParamsType,
@@ -39,4 +40,11 @@ contextBridge.exposeInMainWorld("docker", {
     ipcRenderer.invoke("docker_create_container", requestBody),
   inspectImage: (requestBody: inspectImageParamsType) =>
     ipcRenderer.invoke("docker_inspect_image", requestBody),
+});
+
+//
+contextBridge.exposeInMainWorld("main_send_to_render", {
+  onUpdateImageCreateLog: (
+    callback: (event: IpcRendererEvent, value: string) => void
+  ) => ipcRenderer.on("update-image-create-log", callback),
 });

@@ -8,13 +8,13 @@
     size="huge"
     style="width: 800px; position: fixed; right: 100px; left: 100px; top: 50px"
   >
-    <n-log ref="logInst" :log="log" trim />
+    <n-log :lines="logLines" trim />
   </n-modal>
 </template>
 
 <script lang="ts" setup>
 import { NModal, NLog, useMessage } from "naive-ui";
-import { ref, watch } from "vue";
+import { ref, watch, onMounted } from "vue";
 import { getProjectAndContainerInfo } from "@/stores/docker-project/create-compose-file";
 import { createComposeFileLogStore } from "@/stores/docker-project/create-compose-file-log-bus";
 import type { container_info } from "@/stores/docker-project/container-info";
@@ -47,19 +47,19 @@ watch(
     emits("update:showModal", newValue);
     //当检测到打开模态框时，那么进行 创建compose文件的操作
     if (newValue) {
-      log.value = "";
+      logLines.value = [];
       try {
         //获取项目信息以及当前项目的容器信息
-        log.value += "开始进行基础数据验证\n";
+        logLines.value.push("开始进行基础数据验证");
         const { projectInfo, containerInfoArray } =
           await getProjectAndContainerInfo(props.projectID);
-        log.value += "基础数据验证通过\n";
+        logLines.value.push("基础数据验证通过");
         //检查镜像是否存在并且下载镜像
-        log.value += "检查镜像是否存在\n";
+        logLines.value.push("检查镜像是否存在");
         await checkAndDownloadImages(containerInfoArray);
       } catch (error: any) {
         messages.error(error);
-        log.value += error;
+        logLines.value += error;
       }
     }
   }
@@ -70,34 +70,48 @@ watch(logStore.logArray, (value) => {
 });
 
 //log 日志组件的逻辑
-const log = ref<string>();
+const logLines = ref<Array<string>>([]);
 
 //检查并下载镜像
 async function checkAndDownloadImages(
   containerInfoArray: Array<container_info>
 ) {
   for (const item of containerInfoArray) {
-    log.value += `开始检查镜像${item.images.name}:${item.images.tag}\n`;
+    logLines.value.push(`开始检查镜像${item.images.name}:${item.images.tag}`);
     const inspectImageRe = await window.docker.inspectImage({
       image_name: item.images.name,
       image_tag: item.images.tag,
     });
     if (inspectImageRe.result == false) {
-      log.value += `当前镜像${item.images.name}:${item.images.tag}不存在\n`;
-      log.value += `当前镜像检查返回的原始数据${
-        inspectImageRe.data as string
-      }\n`;
-      log.value += `下载当前${item.images.name}:${item.images.tag}镜像\n`;
+      logLines.value.push(
+        `当前镜像${item.images.name}:${item.images.tag}不存在`
+      );
+      logLines.value.push(
+        `当前镜像检查返回的原始数据${inspectImageRe.data as string}`
+      );
+      logLines.value.push(`下载当前${item.images.name}:${item.images.tag}镜像`);
       const downloadRe = await window.http_request.image_create(
         item.images.name,
         item.images.tag
       );
       console.log(downloadRe);
     } else {
-      log.value += `当前镜像${item.images.name}:${item.images.tag}存在√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√\n`;
+      logLines.value.push(
+        `当前镜像${item.images.name}:${item.images.tag}存在√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√`
+      );
     }
   }
 }
+
+const everyPullImagesLog = ref<Array<{}>>([]);
+
+onMounted(() => {
+  window.main_send_to_render.onUpdateImageCreateLog((_event, value) => {
+    console.log(_event);
+    console.log(value);
+    //维护一个内在的数组
+  });
+});
 </script>
 
 <style lang="scss" scoped></style>

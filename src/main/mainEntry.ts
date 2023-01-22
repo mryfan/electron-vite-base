@@ -18,7 +18,7 @@ const createWindow = () => {
   mainWindow.webContents.openDevTools({ mode: "right" });
   // mainWindow.loadURL(process.argv[2]);
   mainWindow.loadURL("http://localhost:5173");
-  ipcMainHandle();
+  ipcMainHandle(mainWindow);
 };
 
 app.whenReady().then(() => {

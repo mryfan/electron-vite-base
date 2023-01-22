@@ -1,7 +1,8 @@
-import type { IpcMainInvokeEvent } from "electron";
+import type { IpcMainInvokeEvent, BrowserWindow } from "electron";
 import http from "http";
 
 function sendHttpRequest(
+  mainWindow: BrowserWindow,
   imageName: string,
   imageTag: string,
   encoding: BufferEncoding = "utf8"
@@ -19,13 +20,12 @@ function sendHttpRequest(
     const req = http.request(options, function (res) {
       res.setEncoding(encoding);
       res.on("data", function (chunk) {
-        console.log(chunk);
-        resolve({ result: true, data: chunk, sign: "chunk" });
+        mainWindow.webContents.send("update-image-create-log", chunk);
         data += chunk;
       });
 
       res.on("end", function () {
-        resolve({ result: true, data, sign: "end" });
+        resolve({ result: true, data });
       });
     });
 
@@ -38,8 +38,9 @@ function sendHttpRequest(
 export async function handle(
   event: IpcMainInvokeEvent,
   imageName: string,
-  imageTag: string
+  imageTag: string,
+  mainWindow: BrowserWindow,
 ) {
-  const res = sendHttpRequest(imageName, imageTag);
+  const res = sendHttpRequest(mainWindow, imageName, imageTag);
   return res;
 }

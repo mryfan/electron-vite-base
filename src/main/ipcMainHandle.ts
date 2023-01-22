@@ -12,15 +12,26 @@ import { handle as httpRequestSearchImageTagsHandle } from "./ipcHandle/http_req
 import { handle as httpRequestImageCreateHandle } from "./ipcHandle/http_request_image_create";
 import { handle as dockerCreateContainer } from "./ipcHandle/docker_create_container";
 import { handle as dockerInspectImage } from "./ipcHandle/docker_inspect_image";
+import type { BrowserWindow, IpcMainInvokeEvent } from "electron";
 
-export function handle() {
+export function handle(mainWindow: BrowserWindow) {
   ipcMain.handle("ping", pingHandle);
   ipcMain.handle("http_request_search_images", httpRequestSearchImagesHandle);
   ipcMain.handle(
     "http_request_search_image_tags",
     httpRequestSearchImageTagsHandle
   );
-  ipcMain.handle("http_request_image_create", httpRequestImageCreateHandle);
+  ipcMain.handle(
+    "http_request_image_create",
+    (event: IpcMainInvokeEvent, imageName: string, imageTag: string) => {
+      return httpRequestImageCreateHandle(
+        event,
+        imageName,
+        imageTag,
+        mainWindow
+      );
+    }
+  );
 
   //electron-store
   const store = new Store();
