@@ -29,12 +29,10 @@ import {
   isHaveThisID,
   getBaiFenBi,
 } from "@/stores/docker-project/create-compose-file";
-import { createComposeFileLogStore } from "@/stores/docker-project/create-compose-file-log-bus";
 import type { container_info } from "@/stores/docker-project/container-info";
 import type { everyPullImagesLogType } from "@/stores/docker-project/create-compose-file";
 
 const messages = useMessage();
-const logStore = createComposeFileLogStore();
 
 const props = defineProps<{
   showModal: boolean;
@@ -66,8 +64,9 @@ watch(
       try {
         //获取项目信息以及当前项目的容器信息
         logLines.value.push("开始进行基础数据验证");
-        const { projectInfo, containerInfoArray } =
-          await getProjectAndContainerInfo(props.projectID);
+        const { containerInfoArray } = await getProjectAndContainerInfo(
+          props.projectID
+        );
         logLines.value.push("基础数据验证通过");
         //检查镜像是否存在并且下载镜像
         logLines.value.push("检查镜像是否存在");
@@ -79,10 +78,6 @@ watch(
     }
   }
 );
-
-watch(logStore.logArray, (value) => {
-  console.log(value);
-});
 
 //log 日志组件的逻辑
 const logLines = ref<Array<string>>([]);
@@ -187,7 +182,7 @@ const logAllArray = computed(() => {
 });
 
 //滚动到最新
-const logInstRef = ref<LogInst | null>(null)
+const logInstRef = ref<LogInst | null>(null);
 watchEffect(() => {
   if (logAllArray.value) {
     nextTick(() => {
