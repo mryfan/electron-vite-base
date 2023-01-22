@@ -30,7 +30,7 @@ function sendHttpRequest(
     });
 
     req.on("error", (e) => {
-      resolve({ result: false, errmsg: e.message });
+      reject({ result: false, errmsg: e.message });
     });
     req.end();
   });
