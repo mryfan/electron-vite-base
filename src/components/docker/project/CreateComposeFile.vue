@@ -6,18 +6,33 @@
     :mask-closable="false"
     title="结果输出"
     size="huge"
-    style="width: 800px; position: fixed; right: 100px; left: 100px; top: 50px"
+    style="
+      width: 800px;
+      height: 90%;
+      position: fixed;
+      right: 100px;
+      left: 100px;
+      top: 50px;
+    "
   >
-    <n-log :lines="logLines" trim />
+    <n-log :lines="logAllArray" trim :rows="33" />
   </n-modal>
 </template>
 
 <script lang="ts" setup>
 import { NModal, NLog, useMessage } from "naive-ui";
-import { ref, watch, onMounted } from "vue";
-import { getProjectAndContainerInfo } from "@/stores/docker-project/create-compose-file";
+import type { LogInst } from "naive-ui";
+import { ref, watch, onMounted, computed, watchEffect, nextTick } from "vue";
+import {
+  getProjectAndContainerInfo,
+  getUsableValueArray,
+  isHaveThisID,
+  getBaiFenBi,
+} from "@/stores/docker-project/create-compose-file";
 import { createComposeFileLogStore } from "@/stores/docker-project/create-compose-file-log-bus";
 import type { container_info } from "@/stores/docker-project/container-info";
+import type { everyPullImagesLogType } from "@/stores/docker-project/create-compose-file";
+
 const messages = useMessage();
 const logStore = createComposeFileLogStore();
 
@@ -77,6 +92,7 @@ async function checkAndDownloadImages(
   containerInfoArray: Array<container_info>
 ) {
   for (const item of containerInfoArray) {
+    everyPullImagesLog.value = []; //每次循环容器信息都需要清空
     logLines.value.push(`开始检查镜像${item.images.name}:${item.images.tag}`);
     const inspectImageRe = await window.docker.inspectImage({
       image_name: item.images.name,
@@ -94,7 +110,18 @@ async function checkAndDownloadImages(
         item.images.name,
         item.images.tag
       );
-      console.log(downloadRe);
+      if (downloadRe.result == true) {
+        everyPullImagesLog.value.push({
+          id: `${item.images.name}: ${item.images.tag}`,
+          content: "下载成功",
+        });
+        console.log(logAllArray);
+      } else {
+        everyPullImagesLog.value.push({
+          id: `${item.images.name}: ${item.images.tag}`,
+          content: "下载失败",
+        });
+      }
     } else {
       logLines.value.push(
         `当前镜像${item.images.name}:${item.images.tag}存在√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√`
@@ -103,14 +130,70 @@ async function checkAndDownloadImages(
   }
 }
 
-const everyPullImagesLog = ref<Array<{}>>([]);
+let everyPullImagesLog = ref<Array<{ id: string; content: string }>>([]);
 
 onMounted(() => {
   window.main_send_to_render.onUpdateImageCreateLog((_event, value) => {
-    console.log(_event);
-    console.log(value);
     //维护一个内在的数组
+    try {
+      let usableValueArray = getUsableValueArray(value);
+      for (const valueItem of usableValueArray) {
+        const valueItemObj: everyPullImagesLogType = JSON.parse(valueItem);
+        //判断有没有id
+        if (valueItemObj.id) {
+          //判断everyPullImagesLog这个数组里面有没有这个id
+          const { isHave, index } = isHaveThisID(
+            everyPullImagesLog.value,
+            valueItemObj.id
+          );
+          let baiFenBi = getBaiFenBi(valueItemObj);
+
+          if (isHave) {
+            everyPullImagesLog.value[index] = {
+              id: valueItemObj.id,
+              content: `${valueItemObj.id}:${valueItemObj.status}:${baiFenBi}`,
+            };
+          } else {
+            everyPullImagesLog.value.push({
+              id: valueItemObj.id,
+              content: `${valueItemObj.id}:${valueItemObj.status}:${baiFenBi}`,
+            });
+          }
+        } else if (
+          Object.keys(valueItemObj).length == 1 &&
+          valueItemObj.status
+        ) {
+          everyPullImagesLog.value.push({
+            id: valueItemObj.status,
+            content: `${valueItemObj.status}`,
+          });
+        } else {
+          throw "没有可用的区间判断";
+        }
+      }
+    } catch (error) {
+      console.log("error", error);
+      console.log("value", value);
+    }
   });
+});
+
+const logAllArray = computed(() => {
+  return logLines.value.concat(
+    everyPullImagesLog.value.map((item) => {
+      return item.content;
+    })
+  );
+});
+
+//滚动到最新
+const logInstRef = ref<LogInst | null>(null)
+watchEffect(() => {
+  if (logAllArray.value) {
+    nextTick(() => {
+      logInstRef.value?.scrollTo({ position: "bottom", slient: true });
+    });
+  }
 });
 </script>
 

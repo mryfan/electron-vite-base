@@ -118,3 +118,55 @@ export async function getProjectAndContainerInfo(projectID: number) {
   await baseReserve(projectInfo as RowData, containerInfoArray);
   return { projectInfo, containerInfoArray };
 }
+
+export function getUsableValueArray(value: string) {
+  const usableValueArray: Array<string> = [];
+  const valueArray = value.split("\n");
+  for (const initValue of valueArray) {
+    const trimValue = initValue.trim();
+    if (trimValue == "") {
+      break;
+    }
+    usableValueArray.push(trimValue);
+  }
+  return usableValueArray;
+}
+
+export interface everyPullImagesLogType {
+  id?: string;
+  status?: string;
+  progressDetail?: { current?: number; total?: number };
+}
+
+export function isHaveThisID(
+  array: Array<{ id: string; content: string }>,
+  ID: string
+): { isHave: boolean; index: number } {
+  for (let i = 0; i < array.length; i++) {
+    if (array[i].id == ID) {
+      return { isHave: true, index: i };
+    }
+  }
+  return { isHave: false, index: 0 };
+}
+
+export function getBaiFenBi(valueItemObj: everyPullImagesLogType) {
+  let baiFenBi = "";
+  if (
+    valueItemObj.progressDetail?.total &&
+    valueItemObj.progressDetail?.current &&
+    valueItemObj.progressDetail?.total != 0
+  ) {
+    baiFenBi =
+      (
+        (valueItemObj.progressDetail?.current /
+          valueItemObj.progressDetail?.total) *
+        100
+      ).toFixed(2) + "%";
+  }
+
+  if (valueItemObj.status == "Pull complete") {
+    baiFenBi = "100%";
+  }
+  return baiFenBi;
+}
