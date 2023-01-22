@@ -28,9 +28,9 @@ function sendHttpRequest(
       response.on("end", function () {
         if (response.statusCode == 201) {
           resolve({ result: true, data });
-        } else if(response.statusCode == 404) {
+        } else if (response.statusCode == 404) {
           //下载
-        }else{
+        } else {
           reject({ result: false, errmsg: data });
         }
       });

@@ -59,6 +59,16 @@ function checkProjectAndContainerInfo(
       }
     });
   });
+
+  //检查并下载镜像
+  checkAndDownloadImages(containerInfoArray);
+}
+
+//检查并下载镜像
+function checkAndDownloadImages(containerInfoArray: Array<container_info>) {
+  containerInfoArray.forEach((item) => {
+
+  });
 }
 
 /**
