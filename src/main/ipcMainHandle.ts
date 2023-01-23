@@ -67,6 +67,13 @@ export function handle(mainWindow: BrowserWindow) {
     }
   });
 
+  ipcMain.handle(
+    "fs_create_file",
+    (event, fileName: string, content: string) => {
+      fs.writeFileSync(fileName, content);
+    }
+  );
+
   //docker  创建容器处理
   ipcMain.handle(
     "docker_create_container",

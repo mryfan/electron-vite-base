@@ -33,6 +33,8 @@ contextBridge.exposeInMainWorld("el_store", {
 //调用fs的方法
 contextBridge.exposeInMainWorld("fs", {
   stat: (path: string) => ipcRenderer.invoke("fs_stat", path),
+  createFile: (fileName: string, content: string) =>
+    ipcRenderer.invoke("fs_create_file", fileName, content),
 });
 
 //调用docker  api的方法

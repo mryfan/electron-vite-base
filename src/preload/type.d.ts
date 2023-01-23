@@ -28,6 +28,7 @@ declare global {
     };
     fs: {
       stat: (path: string) => Promise<{ status: boolean; message: string }>;
+      createFile: (fileName: string, content: string) => Promise<void>;
     };
     docker: {
       //创建容器

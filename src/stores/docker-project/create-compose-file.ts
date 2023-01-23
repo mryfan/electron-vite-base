@@ -1,5 +1,9 @@
 import type { RowData } from "./get-list-project-columns";
-import type { container_info } from "./container-info";
+import type {
+  container_info,
+  volumes_items,
+  port_items,
+} from "./container-info";
 import type { Ref } from "vue";
 import yaml from "js-yaml";
 
@@ -155,11 +159,80 @@ export async function baseReserve(
   }
 
   //开始生成compose 文件
-  generateYmlFile(containerInfoArray);
+  generateYmlFile(containerInfoArray, projectInfo);
 }
 
-function generateYmlFile(containerInfoArray: Array<container_info>) {
-  console.log(yaml.dump(containerInfoArray));
+type services_volumes = Array<{ type: string; source: string; target: string }>;
+type services_ports = Array<{
+  target: number;
+  published: number;
+  protocol: string;
+}>;
+interface services {
+  [servicesName: string]: {
+    image: string;
+    volumes: services_volumes;
+    ports: services_ports;
+  };
+}
+export interface composeYMLType {
+  version: string;
+  services: services;
+}
+
+function generateYmlFile(
+  containerInfoArray: Array<container_info>,
+  projectInfo: RowData
+) {
+  console.log("projectInfo", projectInfo);
+  const composeYMLData: composeYMLType = {
+    version: "3.8",
+    services: {},
+  };
+  for (const iterator of containerInfoArray) {
+    composeYMLData.services[iterator.images.name] = {
+      image: `${iterator.images.name}:${iterator.images.tag}`,
+      volumes: volumesData(iterator.volumes_items, projectInfo),
+      ports: portsData(iterator.port_items),
+    };
+  }
+  //创建文件并写入内容
+  const fileName = `${projectInfo.project_path}/${projectInfo.dir_name}/compose.yml`;
+  window.fs.createFile(fileName, yaml.dump(composeYMLData));
+}
+
+function volumesData(
+  volumesItems: Array<volumes_items>,
+  projectInfo: RowData
+): services_volumes {
+  console.log(projectInfo);
+
+  const tmp: services_volumes = [];
+  for (const iterator of volumesItems) {
+    tmp.push({
+      type: iterator.type,
+      source:
+        projectInfo.project_path +
+        "/" +
+        projectInfo.dir_name +
+        "/" +
+        iterator.source,
+      target: iterator.target,
+    });
+  }
+  return tmp;
+}
+
+function portsData(portItems: Array<port_items>): services_ports {
+  const tmp: services_ports = [];
+  for (const iterator of portItems) {
+    tmp.push({
+      target: iterator.container_port as number,
+      published: iterator.host_port as number,
+      protocol: iterator.protocol,
+    });
+  }
+  return tmp;
 }
 
 export async function getProjectAndContainerInfo(projectID: number) {
