@@ -1,6 +1,7 @@
 import type {
   createContainerRequestBody,
   inspectImageParamsType,
+  removeContainerRequestBody,
 } from "@/stores/docker-project/create-compose-file";
 
 import { ipcMain } from "electron";
@@ -11,6 +12,7 @@ import { handle as httpRequestSearchImagesHandle } from "./ipcHandle/http_reques
 import { handle as httpRequestSearchImageTagsHandle } from "./ipcHandle/http_request_search_image_tags";
 import { handle as httpRequestImageCreateHandle } from "./ipcHandle/http_request_image_create";
 import { handle as dockerCreateContainer } from "./ipcHandle/docker_create_container";
+import { handle as dockerRemoveContainer } from "./ipcHandle/docker_remove_container";
 import { handle as dockerInspectImage } from "./ipcHandle/docker_inspect_image";
 import { handle as execCmd } from "./ipcHandle/exec-cmd";
 import type { BrowserWindow, IpcMainInvokeEvent } from "electron";
@@ -70,6 +72,13 @@ export function handle(mainWindow: BrowserWindow) {
     "docker_create_container",
     (event, requestBody: createContainerRequestBody) => {
       return dockerCreateContainer(event, requestBody);
+    }
+  );
+  //docker  删除容器处理
+  ipcMain.handle(
+    "docker_remove_container",
+    (event, requestBody: removeContainerRequestBody) => {
+      return dockerRemoveContainer(event, requestBody);
     }
   );
   //docker  检查镜像处理

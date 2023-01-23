@@ -3,6 +3,7 @@ import type { IpcRendererEvent } from "electron";
 import type {
   createContainerRequestBody,
   inspectImageParamsType,
+  removeContainerRequestBody,
 } from "@/stores/docker-project/create-compose-file";
 
 contextBridge.exposeInMainWorld("versions", {
@@ -40,6 +41,8 @@ contextBridge.exposeInMainWorld("docker", {
     ipcRenderer.invoke("docker_create_container", requestBody),
   inspectImage: (requestBody: inspectImageParamsType) =>
     ipcRenderer.invoke("docker_inspect_image", requestBody),
+  removeContainer: (requestBody: removeContainerRequestBody) =>
+    ipcRenderer.invoke("docker_remove_container", requestBody),
 });
 
 //主进程发送到渲染进程

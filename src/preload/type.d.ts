@@ -1,6 +1,7 @@
 import type {
   createContainerRequestBody,
   inspectImageParamsType,
+  removeContainerRequestBody,
 } from "@/stores/docker-project/create-compose-file";
 import type { IpcRendererEvent } from "electron";
 
@@ -36,6 +37,10 @@ declare global {
       //检查镜像
       inspectImage: (
         requestBody: inspectImageParamsType
+      ) => Promise<{ result: boolean; data?: string }>;
+      //删除容器
+      removeContainer: (
+        requestBody: removeContainerRequestBody
       ) => Promise<{ result: boolean; data?: string }>;
     };
     main_send_to_render: {

@@ -6,6 +6,11 @@ export interface createContainerRequestBody {
   Image: string;
 }
 
+export interface removeContainerRequestBody {
+  id: string;
+  force: boolean;
+}
+
 export interface inspectImageParamsType {
   image_name: string;
   image_tag: string;
@@ -133,9 +138,18 @@ export async function baseReserve(
             "当前容器目录" + iterator.container_path + "复制成功"
           );
         }
-        //删除容器
       }
-      console.log(hostAndContainerPathMapArray);
+      //删除容器
+      logCpLinesArray.value.push("开始删除当前临时容器:" + containerID);
+      const removeRe = await window.docker.removeContainer({
+        id: containerID,
+        force: true,
+      });
+      if (removeRe.result == true) {
+        logCpLinesArray.value.push("删除当前临时容器成功:" + containerID);
+      } else {
+        throw removeRe.data;
+      }
     }
   }
 }
