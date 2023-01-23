@@ -41,6 +41,7 @@ const columns = createColumns({
   },
   counter,
   edit(row: any) {
+    console.log(row);
     showModal.value = true;
     projectID.value = row.project_id;
     containerID.value = row.id;

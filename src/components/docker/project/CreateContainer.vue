@@ -172,12 +172,15 @@ watch(
   },
   async (value) => {
     emit("update:showModal", value);
+    console.log(value);
+    console.log(props.containerID);
     if (value == true) {
       if (props.containerID > 0) {
         const containerInfoArray = await window.el_store.get("container_info");
         model.value = containerInfoArray.find((item: container_info) => {
           return item.id == props.containerID;
         });
+        console.log(model.value);
       } else {
         model.value = baseData;
       }

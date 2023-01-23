@@ -96,8 +96,17 @@ function removeVolumesBinding(index: number) {
 }
 
 watch(data.value, () => {
+  console.log(data.value);
   emit("update:modelValue", data.value);
 });
+watch(
+  () => {
+    return props.modelValue;
+  },
+  (value) => {
+    data.value = value;
+  }
+);
 
 const showCopyToHost = computed(() => {
   return data.value.some((item) => {
