@@ -152,6 +152,8 @@ export async function baseReserve(
       }
     }
   }
+
+  //开始生成compose 文件
 }
 
 export async function getProjectAndContainerInfo(projectID: number) {
