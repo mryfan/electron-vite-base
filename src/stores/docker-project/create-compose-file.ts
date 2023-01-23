@@ -1,6 +1,7 @@
 import type { RowData } from "./get-list-project-columns";
 import type { container_info } from "./container-info";
 import type { Ref } from "vue";
+import yaml from "js-yaml";
 
 export interface createContainerRequestBody {
   Image: string;
@@ -154,6 +155,11 @@ export async function baseReserve(
   }
 
   //开始生成compose 文件
+  generateYmlFile(containerInfoArray);
+}
+
+function generateYmlFile(containerInfoArray: Array<container_info>) {
+  console.log(yaml.dump(containerInfoArray));
 }
 
 export async function getProjectAndContainerInfo(projectID: number) {
