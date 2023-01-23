@@ -131,7 +131,7 @@ export async function baseReserve(
         logCpLinesArray.value.push(
           "复制容器里面的目录到宿主机目录" + iterator.container_path
         );
-        const cmdStr = `docker cp ${containerID}:${iterator.container_path} ${iterator.host_path}`;
+        const cmdStr = `docker cp ${containerID}:${iterator.container_path}/. ${iterator.host_path}`;
         const execRe = await window.exec.cmd(cmdStr);
         if (execRe.stderr == "" && execRe.stdout == "") {
           logCpLinesArray.value.push(
