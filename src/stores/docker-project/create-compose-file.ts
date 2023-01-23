@@ -1,5 +1,6 @@
 import type { RowData } from "./get-list-project-columns";
 import type { container_info } from "./container-info";
+import type { Ref } from "vue";
 
 export interface createContainerRequestBody {
   Image: string;
@@ -70,10 +71,12 @@ function checkProjectAndContainerInfo(
  * 基础准备，创建目录
  * @param params
  */
-async function baseReserve(
+export async function baseReserve(
   projectInfo: RowData,
-  containerInfoArray: Array<container_info>
+  containerInfoArray: Array<container_info>,
+  logCpLinesArray: Ref<Array<string>>
 ) {
+  logCpLinesArray.value.push("开始准备挂载目录等设置");
   //创建本项目的基础目录
   const baseDir = projectInfo.project_path + "/" + projectInfo.dir_name;
   const re = await window.fs.stat(baseDir);
@@ -105,7 +108,33 @@ async function baseReserve(
     }
     //容器复制到宿主机的处理
     if (hostAndContainerPathMapArray.length > 0) {
-      //运行一个临时容器,复制文件出来,删除容器
+      logCpLinesArray.value.push("容器复制到宿主机的处理");
+      //运行一个临时容器
+      logCpLinesArray.value.push("运行一个临时容器");
+      const createContainerRe = await window.docker.createContainer({
+        Image: `${containerInfo.images.name}:${containerInfo.images.tag}`,
+      });
+      if (createContainerRe.result == false) {
+        throw createContainerRe.data;
+      }
+      const { Id: containerID }: { Id: string } = JSON.parse(
+        createContainerRe.data as string
+      );
+      logCpLinesArray.value.push("临时容器ID:" + containerID);
+      //复制容器里面的文件出来
+      for (const iterator of hostAndContainerPathMapArray) {
+        logCpLinesArray.value.push(
+          "复制容器里面的目录到宿主机目录" + iterator.container_path
+        );
+        const cmdStr = `docker cp ${containerID}:${iterator.container_path} ${iterator.host_path}`;
+        const execRe = await window.exec.cmd(cmdStr);
+        if (execRe.stderr == "" && execRe.stdout == "") {
+          logCpLinesArray.value.push(
+            "当前容器目录" + iterator.container_path + "复制成功"
+          );
+        }
+        //删除容器
+      }
       console.log(hostAndContainerPathMapArray);
     }
   }
@@ -115,7 +144,6 @@ export async function getProjectAndContainerInfo(projectID: number) {
   const { projectInfo, containerInfoArray } =
     await getProjectInfoAndContainerInfoArray(projectID);
   checkProjectAndContainerInfo(projectInfo as RowData, containerInfoArray);
-  await baseReserve(projectInfo as RowData, containerInfoArray);
   return { projectInfo, containerInfoArray };
 }
 

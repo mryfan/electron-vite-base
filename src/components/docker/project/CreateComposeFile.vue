@@ -28,6 +28,7 @@ import {
   getUsableValueArray,
   isHaveThisID,
   getBaiFenBi,
+  baseReserve,
 } from "@/stores/docker-project/create-compose-file";
 import type { container_info } from "@/stores/docker-project/container-info";
 import type { everyPullImagesLogType } from "@/stores/docker-project/create-compose-file";
@@ -64,16 +65,16 @@ watch(
       try {
         //获取项目信息以及当前项目的容器信息
         logLines.value.push("开始进行基础数据验证");
-        const { containerInfoArray } = await getProjectAndContainerInfo(
-          props.projectID
-        );
+        const { projectInfo, containerInfoArray } =
+          await getProjectAndContainerInfo(props.projectID);
         logLines.value.push("基础数据验证通过");
         //检查镜像是否存在并且下载镜像
         logLines.value.push("检查镜像是否存在");
         await checkAndDownloadImages(containerInfoArray);
+        await baseReserve(projectInfo, containerInfoArray, logCpLinesArray);
       } catch (error: any) {
-        messages.error(error);
-        logLines.value += error;
+        messages.error(error + "");
+        logLines.value.push(error + "");
       }
     }
   }
@@ -81,7 +82,7 @@ watch(
 
 //log 日志组件的逻辑
 const logLines = ref<Array<string>>([]);
-
+const logCpLinesArray = ref<Array<string>>([]);
 //检查并下载镜像
 async function checkAndDownloadImages(
   containerInfoArray: Array<container_info>
@@ -108,14 +109,14 @@ async function checkAndDownloadImages(
       if (downloadRe.result == true) {
         everyPullImagesLog.value.push({
           id: `${item.images.name}: ${item.images.tag}`,
-          content: "下载成功",
+          content: `下载成功${item.images.name}:${item.images.tag}`,
         });
-        console.log(logAllArray);
       } else {
         everyPullImagesLog.value.push({
           id: `${item.images.name}: ${item.images.tag}`,
-          content: "下载失败",
+          content: "下载失败" + JSON.stringify(downloadRe),
         });
+        throw "下载失败!" + JSON.stringify(downloadRe);
       }
     } else {
       logLines.value.push(
@@ -177,7 +178,8 @@ const logAllArray = computed(() => {
   return logLines.value.concat(
     everyPullImagesLog.value.map((item) => {
       return item.content;
-    })
+    }),
+    logCpLinesArray.value
   );
 });
 

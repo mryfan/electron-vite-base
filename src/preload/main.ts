@@ -42,9 +42,14 @@ contextBridge.exposeInMainWorld("docker", {
     ipcRenderer.invoke("docker_inspect_image", requestBody),
 });
 
-//
+//主进程发送到渲染进程
 contextBridge.exposeInMainWorld("main_send_to_render", {
   onUpdateImageCreateLog: (
     callback: (event: IpcRendererEvent, value: string) => void
   ) => ipcRenderer.on("update-image-create-log", callback),
+});
+
+//exec_cmd
+contextBridge.exposeInMainWorld("exec", {
+  cmd: (cmd: string) => ipcRenderer.invoke("exec_cmd", cmd),
 });

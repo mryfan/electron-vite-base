@@ -3,6 +3,7 @@ import type {
   inspectImageParamsType,
 } from "@/stores/docker-project/create-compose-file";
 import type { IpcRendererEvent } from "electron";
+
 declare global {
   //electron 的声明文件，用于提示
   interface Window {
@@ -41,6 +42,12 @@ declare global {
       onUpdateImageCreateLog: (
         callback: (event: IpcRendererEvent, value: string) => void
       ) => void;
+    };
+    exec: {
+      cmd: (cmd: string) => Promise<{
+        stdout: string;
+        stderr: string;
+      }>;
     };
   }
 }

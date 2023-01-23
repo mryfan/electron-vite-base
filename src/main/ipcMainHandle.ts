@@ -12,6 +12,7 @@ import { handle as httpRequestSearchImageTagsHandle } from "./ipcHandle/http_req
 import { handle as httpRequestImageCreateHandle } from "./ipcHandle/http_request_image_create";
 import { handle as dockerCreateContainer } from "./ipcHandle/docker_create_container";
 import { handle as dockerInspectImage } from "./ipcHandle/docker_inspect_image";
+import { handle as execCmd } from "./ipcHandle/exec-cmd";
 import type { BrowserWindow, IpcMainInvokeEvent } from "electron";
 
 export function handle(mainWindow: BrowserWindow) {
@@ -78,4 +79,8 @@ export function handle(mainWindow: BrowserWindow) {
       return dockerInspectImage(event, paramsData);
     }
   );
+  //执行CMD命令处理
+  ipcMain.handle("exec_cmd", (event, cmd: string) => {
+    return execCmd(event, cmd);
+  });
 }

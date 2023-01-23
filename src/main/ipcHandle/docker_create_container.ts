@@ -11,7 +11,9 @@ function sendHttpRequest(
     path: `/v1.41/containers/create`,
     port: "2375",
     method: "POST",
-    headers: {},
+    headers: {
+      "content-type": "application/json",
+    },
   };
 
   let data = "";
@@ -28,17 +30,16 @@ function sendHttpRequest(
       response.on("end", function () {
         if (response.statusCode == 201) {
           resolve({ result: true, data });
-        } else if (response.statusCode == 404) {
-          //下载
         } else {
-          reject({ result: false, errmsg: data });
+          reject(JSON.stringify({ result: false, errmsg: data }));
         }
       });
     });
 
     request.on("error", (e: Error) => {
-      reject({ result: false, errmsg: e.message });
+      reject(JSON.stringify({ result: false, errmsg: e.message }));
     });
+    request.write(JSON.stringify(requestBody));
     request.end();
   });
 }
