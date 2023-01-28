@@ -10,6 +10,8 @@
         <n-select
           v-model:value="initModel.action_type"
           :options="actionOptions"
+          clearable
+          placeholder="选择操作类型"
         />
       </n-form-item>
       <component
@@ -43,7 +45,7 @@ const initModel = computed({
 });
 
 //操作类型的逻辑区域
-const actionOptions = ref<Array<{ label: string; value: string }>>([
+const actionOptions = ref<Array<{ label: string; value?: string }>>([
   {
     label: "当主机目录为空，将容器路径里面的数据复制到主机",
     value: "container_to_host",

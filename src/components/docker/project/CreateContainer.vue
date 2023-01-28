@@ -88,7 +88,10 @@
           <create-container-mount v-model="model.volumes_items" />
         </n-form-item>
         <n-form-item label="额外操作">
-          <extra-action v-model="model.extra_action_items" />
+          <extra-action
+            v-model="model.extra_action_items"
+            :volumes_items="model.volumes_items"
+          />
         </n-form-item>
         <n-form-item label="环境变量">
           <n-dynamic-input
@@ -160,7 +163,7 @@ const baseData: container_info = {
   volumes_items: [{ type: "bind", source: "", target: "" }],
   extra_action_items: [
     {
-      action_type: "container_to_host",
+      action_type: null,
       action_params: [
         {
           host_dir: "",

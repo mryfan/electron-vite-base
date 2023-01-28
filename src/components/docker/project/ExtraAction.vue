@@ -29,9 +29,11 @@ import ExtraActionReal from "./ExtraActionReal.vue";
 import { NButtonGroup, NButton, NIcon } from "naive-ui";
 import { computed } from "vue";
 import type { extra_action_items } from "@/stores/docker-project/container-info";
+import type { volumesType } from "@/stores/docker-project/container-volumes";
 
 const props = defineProps<{
   modelValue: Array<extra_action_items>;
+  volumes_items: Array<volumesType>;
 }>();
 const emit = defineEmits<{
   (e: "update:modelValue", newValue: Array<extra_action_items>): void;

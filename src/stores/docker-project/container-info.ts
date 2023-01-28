@@ -16,7 +16,7 @@ export interface copy_to_host_items {
 }
 
 export interface extra_action_items {
-  action_type: string;
+  action_type: string | null;
   action_params: Array<copy_to_host_items>;
 }
 
