@@ -5,7 +5,10 @@
       v-for="(item, index) in initExtraActionItems"
       v-bind:key="index"
     >
-      <extra-action-real v-model="initExtraActionItems[index]" />
+      <extra-action-real
+        v-model="initExtraActionItems[index]"
+        :volumes_items="props.volumes_items"
+      />
       <n-button-group size="small" style="width: 15%; display: inline-block">
         <n-button type="default" round @click="deleteItem(index)">
           <template #icon>

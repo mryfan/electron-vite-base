@@ -12,6 +12,7 @@
           :options="actionOptions"
           clearable
           placeholder="选择操作类型"
+          @update:value="handleUpdateValue"
         />
       </n-form-item>
       <component
@@ -27,9 +28,11 @@ import type { extra_action_items } from "@/stores/docker-project/container-info"
 import { NCard, NForm, NFormItem, NSelect } from "naive-ui";
 import { ref, computed } from "vue";
 import ContainerToHost from "./ContainerToHost.vue";
+import type { volumesType } from "@/stores/docker-project/container-volumes";
 
 const props = defineProps<{
   modelValue: extra_action_items;
+  volumes_items: Array<volumesType>;
 }>();
 const emit = defineEmits<{
   (e: "update:modelValue", newValue: extra_action_items): void;
@@ -60,6 +63,17 @@ const tabs = {
 const currentTab = computed(() => {
   return initModel.value.action_type;
 });
+//下拉的切换
+function handleUpdateValue(value: string) {
+  if (value == "container_to_host") {
+    initModel.value.action_params = props.volumes_items.map((item) => {
+      return {
+        host_dir: item.source,
+        container_dir: item.target,
+      };
+    });
+  }
+}
 </script>
 
 <style lang="scss" scoped></style>
