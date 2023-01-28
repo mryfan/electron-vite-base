@@ -7,90 +7,102 @@
     size="huge"
     style="width: 800px; position: fixed; right: 100px; left: 100px; top: 50px"
   >
-    <n-form
-      :model="model"
-      label-placement="left"
-      label-width="auto"
-      require-mark-placement="right-hanging"
-      size="small"
-      :style="{
-        maxWidth: '740px',
-      }"
-    >
-      <n-form-item label="容器名称">
-        <n-input
-          v-model:value="model.name"
-          placeholder="容器名称(不建议填写)"
-        />
-      </n-form-item>
-      <n-form-item label="镜像数据">
-        <n-input-group>
-          <n-input v-model:value="model.images.name" placeholder="镜像名称" />
+    <n-scrollbar style="max-height: 500px">
+      <n-form
+        :model="model"
+        label-placement="left"
+        label-width="auto"
+        require-mark-placement="right-hanging"
+        size="small"
+        :style="{
+          maxWidth: '740px',
+        }"
+      >
+        <n-form-item label="容器名称">
           <n-input
-            v-model:value="model.images.tag"
-            placeholder="标签(默认latest)"
+            v-model:value="model.name"
+            placeholder="容器名称(不建议填写)"
           />
-        </n-input-group>
-      </n-form-item>
-
-      <n-form-item label="端口绑定">
-        <n-space vertical>
-          <n-input-group v-for="(item, index) in model.port_items" :key="index">
+        </n-form-item>
+        <n-form-item label="镜像数据">
+          <n-input-group>
+            <n-input v-model:value="model.images.name" placeholder="镜像名称" />
             <n-input
-              v-model:value="item.host_ip"
-              style="width: 120px"
-              placeholder="主机ip(可不填)"
+              v-model:value="model.images.tag"
+              placeholder="标签(默认latest)"
             />
-            <n-input-number
-              v-model:value="item.host_port"
-              style="width: 120px"
-              placeholder="主机端口"
-              min="1"
-              max="65535"
-            />
-            <n-input-number
-              v-model:value="item.container_port"
-              style="width: 120px"
-              placeholder="容器端口"
-              min="1"
-              max="65535"
-            />
-            <n-select
-              v-model:value="item.protocol"
-              style="width: 100px"
-              placeholder="协议"
-              :options="protocol_options"
-            />
-            <n-button-group size="small">
-              <n-button type="default" round @click="removePortBinding(index)">
-                <template #icon>
-                  <n-icon><remove-sharp /></n-icon>
-                </template>
-              </n-button>
-              <n-button type="default" round @click="addPortBinding">
-                <template #icon>
-                  <n-icon><add-sharp /></n-icon>
-                </template>
-              </n-button>
-            </n-button-group>
           </n-input-group>
-        </n-space>
-      </n-form-item>
-      <n-form-item label="挂载绑定">
-        <create-container-mount v-model="model.volumes_items" />
-      </n-form-item>
-      <n-form-item label="环境变量">
-        <n-dynamic-input
-          v-model:value="model.env_items"
-          preset="pair"
-          key-placeholder="环境变量名"
-          value-placeholder="环境变量值"
-        />
-      </n-form-item>
-    </n-form>
-    <n-space justify="center">
-      <n-button @click="submitCreateContainer">保存容器</n-button>
-    </n-space>
+        </n-form-item>
+
+        <n-form-item label="端口绑定">
+          <n-space vertical>
+            <n-input-group
+              v-for="(item, index) in model.port_items"
+              :key="index"
+            >
+              <n-input
+                v-model:value="item.host_ip"
+                style="width: 120px"
+                placeholder="主机ip(可不填)"
+              />
+              <n-input-number
+                v-model:value="item.host_port"
+                style="width: 120px"
+                placeholder="主机端口"
+                min="1"
+                max="65535"
+              />
+              <n-input-number
+                v-model:value="item.container_port"
+                style="width: 120px"
+                placeholder="容器端口"
+                min="1"
+                max="65535"
+              />
+              <n-select
+                v-model:value="item.protocol"
+                style="width: 100px"
+                placeholder="协议"
+                :options="protocol_options"
+              />
+              <n-button-group size="small">
+                <n-button
+                  type="default"
+                  round
+                  @click="removePortBinding(index)"
+                >
+                  <template #icon>
+                    <n-icon><remove-sharp /></n-icon>
+                  </template>
+                </n-button>
+                <n-button type="default" round @click="addPortBinding">
+                  <template #icon>
+                    <n-icon><add-sharp /></n-icon>
+                  </template>
+                </n-button>
+              </n-button-group>
+            </n-input-group>
+          </n-space>
+        </n-form-item>
+        <n-form-item label="挂载绑定">
+          <create-container-mount v-model="model.volumes_items" />
+        </n-form-item>
+        <n-form-item label="额外操作">
+          <extra-action v-model="model.extra_action_items" />
+        </n-form-item>
+        <n-form-item label="环境变量">
+          <n-dynamic-input
+            v-model:value="model.env_items"
+            preset="pair"
+            key-placeholder="环境变量名"
+            value-placeholder="环境变量值"
+          />
+        </n-form-item>
+      </n-form>
+      <n-space justify="center">
+        <n-button @click="submitCreateContainer">保存容器</n-button>
+      </n-space>
+    </n-scrollbar>
   </n-modal>
 </template>
 
@@ -109,6 +121,7 @@ import {
   useMessage,
   NInputNumber,
   NDynamicInput,
+  NScrollbar,
 } from "naive-ui";
 import { AddSharp, RemoveSharp } from "@vicons/ionicons5";
 import { ref, toRaw, watch } from "vue";
@@ -116,6 +129,7 @@ import { getID } from "@/stores/docker-project/save-project-info";
 import { useListReloadCounterStore } from "@/stores/docker-project/external-event-bus";
 import type { container_info } from "@/stores/docker-project/container-info";
 import CreateContainerMount from "./CreateContainerMount.vue";
+import ExtraAction from "./ExtraAction.vue";
 const counter = useListReloadCounterStore();
 const props = defineProps<{
   showModal: boolean;
@@ -143,8 +157,17 @@ const baseData: container_info = {
       protocol: "tcp",
     },
   ],
-  volumes_items: [
-    { type: "bind", source: "", target: "", copy_to_host: false },
+  volumes_items: [{ type: "bind", source: "", target: "" }],
+  extra_action_items: [
+    {
+      action_type: "container_to_host",
+      action_params: [
+        {
+          host_dir: "",
+          container_dir: "",
+        },
+      ],
+    },
   ],
   env_items: [
     {

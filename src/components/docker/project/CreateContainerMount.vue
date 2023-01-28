@@ -4,8 +4,7 @@
       <tr>
         <th style="width: 100px">挂载类型</th>
         <th>挂载源</th>
-        <th>容器路径</th>
-        <th v-show="showCopyToHost">容器复制到主机</th>
+        <th>容器目录路径</th>
         <th>操作</th>
       </tr>
     </thead>
@@ -28,13 +27,6 @@
               type="text"
               placeholder="容器路径"
             />
-          </td>
-          <td v-show="showCopyToHost">
-            <n-checkbox
-              v-model:checked="item.copy_to_host"
-              v-show="item.type == 'bind'"
-            >
-            </n-checkbox>
           </td>
           <td>
             <n-button-group size="small">
@@ -68,12 +60,11 @@ import {
   NButtonGroup,
   NSelect,
   NInput,
-  NCheckbox,
 } from "naive-ui";
 import { AddSharp, RemoveSharp } from "@vicons/ionicons5";
 import type { volumesType } from "@/stores/docker-project/container-volumes";
 import { bindOptions } from "@/stores/docker-project/container-volumes";
-import { ref, computed, watch } from "vue";
+import { ref, watch } from "vue";
 
 const props = defineProps<{
   modelValue: Array<volumesType>;
@@ -88,7 +79,6 @@ function addVolumesBinding() {
     type: "bind",
     source: "",
     target: "",
-    copy_to_host: false,
   });
 }
 function removeVolumesBinding(index: number) {
@@ -107,12 +97,6 @@ watch(
     data.value = value;
   }
 );
-
-const showCopyToHost = computed(() => {
-  return data.value.some((item) => {
-    return item.type == "bind";
-  });
-});
 </script>
 
 <style lang="scss" scoped></style>

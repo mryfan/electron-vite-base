@@ -9,7 +9,15 @@ export interface volumes_items {
   type: mountType;
   source: string;
   target: string;
-  copy_to_host: boolean;
+}
+export interface copy_to_host_items {
+  host_dir: string;
+  container_dir: string;
+}
+
+export interface extra_action_items {
+  action_type: string;
+  action_params: Array<copy_to_host_items>;
 }
 
 export interface port_items {
@@ -31,5 +39,6 @@ export interface container_info {
   images: images;
   port_items: Array<port_items>;
   volumes_items: Array<volumes_items>;
+  extra_action_items: Array<extra_action_items>;
   env_items: Array<env_items>;
 }

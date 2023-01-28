@@ -50,7 +50,6 @@ interface volumesType {
   type: mountType;
   source: string;
   target: string;
-  copy_to_host: boolean;
   read_only?: boolean;
   bind?: bindOptionsType;
   volume?: volumeOptionsType;
