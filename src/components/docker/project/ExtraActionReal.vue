@@ -24,7 +24,10 @@
 </template>
 
 <script setup lang="ts">
-import type { extra_action_items } from "@/stores/docker-project/container-info";
+import type {
+  extra_action_items,
+  copy_to_host_items,
+} from "@/stores/docker-project/container-info";
 import { NCard, NForm, NFormItem, NSelect } from "naive-ui";
 import { ref, computed } from "vue";
 import ContainerToHost from "./ContainerToHost.vue";
@@ -66,12 +69,18 @@ const currentTab = computed(() => {
 //下拉的切换
 function handleUpdateValue(value: string) {
   if (value == "container_to_host") {
-    initModel.value.action_params = props.volumes_items.map((item) => {
-      return {
-        host_dir: item.source,
-        container_dir: item.target,
-      };
+    const result: Array<copy_to_host_items> = [];
+    props.volumes_items.forEach((item) => {
+      if (item.type == "bind") {
+        result.push({
+          host_dir: item.source,
+          container_dir: item.target + "/.",
+        });
+      }
     });
+    if (result.length > 0) {
+      initModel.value.action_params = result;
+    }
   }
 }
 </script>
