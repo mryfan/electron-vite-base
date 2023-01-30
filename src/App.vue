@@ -7,6 +7,7 @@ import {
   NMenu,
   NLayoutSider,
   NMessageProvider,
+  NDialogProvider,
 } from "naive-ui";
 import { ref } from "vue";
 import { menuOptions } from "./stores/menu/left-menu";
@@ -18,32 +19,34 @@ const inverted = ref(false);
 
 <template>
   <n-message-provider>
-    <n-layout style="height: 100vh">
-      <n-layout-header :inverted="inverted" bordered style="height: 7vh">
-      </n-layout-header>
-      <n-layout has-sider style="height: 93vh">
-        <n-layout-sider
-          bordered
-          show-trigger
-          collapse-mode="width"
-          :collapsed-width="64"
-          :width="240"
-          :native-scrollbar="false"
-          :inverted="inverted"
-        >
-          <n-menu
-            :inverted="inverted"
+    <n-dialog-provider>
+      <n-layout style="height: 100vh">
+        <n-layout-header :inverted="inverted" bordered style="height: 7vh">
+        </n-layout-header>
+        <n-layout has-sider style="height: 93vh">
+          <n-layout-sider
+            bordered
+            show-trigger
+            collapse-mode="width"
             :collapsed-width="64"
-            :collapsed-icon-size="22"
-            :options="menuOptions"
-            default-value="workbench"
-          />
-        </n-layout-sider>
-        <n-layout>
-          <RouterView />
+            :width="240"
+            :native-scrollbar="false"
+            :inverted="inverted"
+          >
+            <n-menu
+              :inverted="inverted"
+              :collapsed-width="64"
+              :collapsed-icon-size="22"
+              :options="menuOptions"
+              default-value="workbench"
+            />
+          </n-layout-sider>
+          <n-layout>
+            <RouterView />
+          </n-layout>
         </n-layout>
       </n-layout>
-    </n-layout>
+    </n-dialog-provider>
   </n-message-provider>
 </template>
 

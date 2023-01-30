@@ -34,6 +34,19 @@ export const menuOptions = [
             RouterLink,
             {
               to: {
+                name: "docker/docker-file",
+              },
+            },
+            { default: () => "DockerFile" }
+          ),
+        key: "docker-file",
+      },
+      {
+        label: () =>
+          h(
+            RouterLink,
+            {
+              to: {
                 name: "docker/docker-images",
               },
             },

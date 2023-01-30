@@ -1,7 +1,7 @@
 <template>
   <n-card title="搜索">
     <template #header-extra> 搜索镜像、容器等 </template>
-    <n-space vertical>
+    <n-space>
       <n-button type="info" dashed style="width: 100%" @click="handleClick">
         搜索
       </n-button>
