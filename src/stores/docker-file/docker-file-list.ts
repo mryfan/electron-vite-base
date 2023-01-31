@@ -7,6 +7,7 @@ import { defineStore } from "pinia";
 export function createdColumns(action: {
   update: (rowData: docker_file_form, rowIndex: number) => void;
   delete: (rowData: docker_file_form, rowIndex: number) => void;
+  createDockerFile: (rowData: docker_file_form, rowIndex: number) => void;
 }): DataTableColumns<docker_file_form> {
   return [
     {
@@ -39,8 +40,6 @@ export function createdColumns(action: {
             NButton,
             {
               size: "small",
-              strong: true,
-              tertiary: true,
               onClick() {
                 action.update(rowData, rowIndex);
               },
@@ -53,14 +52,24 @@ export function createdColumns(action: {
             NButton,
             {
               size: "small",
-              strong: true,
-              tertiary: true,
               onClick() {
                 action.delete(rowData, rowIndex);
               },
             },
             {
               default: () => "删除",
+            }
+          ),
+          h(
+            NButton,
+            {
+              size: "small",
+              onClick() {
+                action.createDockerFile(rowData, rowIndex);
+              },
+            },
+            {
+              default: () => "生成DockerFile",
             }
           ),
         ];

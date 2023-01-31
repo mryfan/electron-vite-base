@@ -37,6 +37,9 @@ const action = {
     await window.el_store.set("docker_file_info", yuanShiData);
     listReloadCounterStoreObj.increment();
   },
+  createDockerFile: (rowData: docker_file_form, rowIndex: number) => {
+    
+  },
 };
 const columns = createdColumns(action);
 const data = ref<Array<docker_file_form>>([]);
