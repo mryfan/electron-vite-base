@@ -6,42 +6,41 @@
     v-model:show="showModal"
     class="custom-card"
     preset="card"
-    title="创建DockerFile"
+    title="创建DockerFile元素"
     :mask-closable="false"
     style="width: 800px; position: fixed; right: 100px; left: 100px; top: 50px"
   >
-    <n-card :bordered="false">
-      <n-form label-placement="left" size="medium">
-        <n-space vertical>
-          <n-form-item label="FROM指令">
-            <n-input-group>
-              <n-input
-                placeholder="镜像名称 e.g: php"
-                v-model:value="docker_file_form_data.base_image.image_name"
-              ></n-input>
-              <n-input
-                placeholder="标签(默认latest)"
-                v-model:value="docker_file_form_data.base_image.image_tag"
-              ></n-input>
-            </n-input-group>
-          </n-form-item>
-          <n-form-item label="COPY指令">
-            <n-input
-              placeholder="COPY指令"
-              v-model:value="docker_file_form_data.copy_command_str"
-            >
-            </n-input>
-          </n-form-item>
-          <n-form-item label="RUN指令">
-            <n-input
-              placeholder="RUN指令"
-              v-model:value="docker_file_form_data.run_command_str"
-            >
-            </n-input>
-          </n-form-item>
-        </n-space>
-      </n-form>
-    </n-card>
+    <n-form label-placement="left" size="medium">
+      <n-form-item label="FROM指令">
+        <n-input-group>
+          <n-input
+            placeholder="镜像名称 e.g: php"
+            v-model:value="docker_file_form_data.base_image.image_name"
+          ></n-input>
+          <n-input
+            placeholder="标签(默认latest)"
+            v-model:value="docker_file_form_data.base_image.image_tag"
+          ></n-input>
+        </n-input-group>
+      </n-form-item>
+      <n-form-item label="COPY指令">
+        <n-input
+          placeholder="COPY指令"
+          v-model:value="docker_file_form_data.copy_command_str"
+        >
+        </n-input>
+      </n-form-item>
+      <n-form-item label="RUN指令">
+        <n-input
+          placeholder="RUN指令"
+          v-model:value="docker_file_form_data.run_command_str"
+        >
+        </n-input>
+      </n-form-item>
+      <div style="text-align: center">
+        <n-button @click="saveDockerFileYuanData">保存</n-button>
+      </div>
+    </n-form>
   </n-modal>
   <predefine-handle
     v-model="showPredefineHandle"
@@ -52,17 +51,15 @@
 
 <script lang="ts" setup>
 import {
-  NCard,
   NButton,
   NModal,
   NForm,
   NFormItem,
   NInput,
-  NSpace,
   NInputGroup,
   useDialog,
 } from "naive-ui";
-import { ref, watch } from "vue";
+import { ref, watch, toRaw } from "vue";
 import type { docker_file_form } from "@/stores/docker-file/docker-file-form";
 import { extension_advance_data } from "@/stores/docker-file/docker-file-form";
 import PredefineHandle from "./PredefineHandle.vue";
@@ -117,6 +114,16 @@ function handlePredefineData(
 ) {
   docker_file_form_data.value.copy_command_str = copy_command_str;
   docker_file_form_data.value.run_command_str = run_command_str;
+}
+
+//保存dockerfile的元数据
+async function saveDockerFileYuanData() {
+  const yuanShiData = (await window.el_store.get("docker_file_info")) || [];
+  if (yuanShiData.length == 0) {
+    await window.el_store.set("docker_file_info", [
+      toRaw(docker_file_form_data.value),
+    ]);
+  }
 }
 </script>
 
