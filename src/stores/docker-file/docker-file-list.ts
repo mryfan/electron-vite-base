@@ -98,3 +98,11 @@ export const listReloadCounterStore = defineStore(
     },
   }
 );
+
+export function createFileContent(data: docker_file_form): string {
+  let tmp = "";
+  tmp += `FROM ${data.base_image.image_name}:${data.base_image.image_tag}\n`;
+  tmp += `COPY ${data.copy_command_str}\n`;
+  tmp += `RUN ${data.run_command_str}\n`;
+  return tmp;
+}

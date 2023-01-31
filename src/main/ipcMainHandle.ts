@@ -4,7 +4,7 @@ import type {
   removeContainerRequestBody,
 } from "@/stores/docker-project/create-compose-file";
 
-import { ipcMain } from "electron";
+import { ipcMain, dialog } from "electron";
 import Store from "electron-store";
 import fs from "fs";
 import { handle as pingHandle } from "./ipcHandle/ping";
@@ -15,6 +15,7 @@ import { handle as dockerCreateContainer } from "./ipcHandle/docker_create_conta
 import { handle as dockerRemoveContainer } from "./ipcHandle/docker_remove_container";
 import { handle as dockerInspectImage } from "./ipcHandle/docker_inspect_image";
 import { handle as execCmd } from "./ipcHandle/exec-cmd";
+import { handle as showOpenDialogHandle } from "./ipcHandle/show_open_dialog";
 import type { BrowserWindow, IpcMainInvokeEvent } from "electron";
 
 export function handle(mainWindow: BrowserWindow) {
@@ -99,4 +100,6 @@ export function handle(mainWindow: BrowserWindow) {
   ipcMain.handle("exec_cmd", (event, cmd: string) => {
     return execCmd(event, cmd);
   });
+  //处理系统对话框
+  ipcMain.handle("electron_api_dialog_showOpenDialog", showOpenDialogHandle);
 }

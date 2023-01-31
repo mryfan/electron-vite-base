@@ -17,6 +17,7 @@ import {
   createdColumns,
   getData,
   listReloadCounterStore,
+  createFileContent,
 } from "@/stores/docker-file/docker-file-list";
 import { ref, onMounted, watch } from "vue";
 import type { docker_file_form } from "@/stores/docker-file/docker-file-form";
@@ -37,8 +38,18 @@ const action = {
     await window.el_store.set("docker_file_info", yuanShiData);
     listReloadCounterStoreObj.increment();
   },
-  createDockerFile: (rowData: docker_file_form, rowIndex: number) => {
-    
+  createDockerFile: async (rowData: docker_file_form, rowIndex: number) => {
+    const openDialogReturnValue =
+      await window.electron_api.dialog_showOpenDialog({
+        properties: ["openDirectory"],
+        title: "请选择保存目录",
+        buttonLabel: "选择",
+      });
+    //生成文件的内容
+    const fileContentStr = createFileContent(rowData);
+    //将文件的内容写入到所选择的目录里
+    const fileName = `${openDialogReturnValue.filePaths[0]}/Dockerfile`;
+    await window.fs.createFile(fileName, fileContentStr);
   },
 };
 const columns = createdColumns(action);

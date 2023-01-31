@@ -55,6 +55,11 @@ declare global {
         stderr: string;
       }>;
     };
+    electron_api: {
+      dialog_showOpenDialog: (
+        option: OpenDialogOptions
+      ) => Promise<Electron.OpenDialogReturnValue>;
+    };
   }
 }
 export {};

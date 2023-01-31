@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
-import type { IpcRendererEvent } from "electron";
+import type { IpcRendererEvent, OpenDialogOptions } from "electron";
 import type {
   createContainerRequestBody,
   inspectImageParamsType,
@@ -57,4 +57,10 @@ contextBridge.exposeInMainWorld("main_send_to_render", {
 //exec_cmd
 contextBridge.exposeInMainWorld("exec", {
   cmd: (cmd: string) => ipcRenderer.invoke("exec_cmd", cmd),
+});
+
+//electron api
+contextBridge.exposeInMainWorld("electron_api", {
+  dialog_showOpenDialog: (option: OpenDialogOptions) =>
+    ipcRenderer.invoke("electron_api_dialog_showOpenDialog", option),
 });
