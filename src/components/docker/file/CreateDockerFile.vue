@@ -1,7 +1,4 @@
 <template>
-  <n-button type="info" dashed style="width: 100%" @click="handleClick">
-    创建DockerFile
-  </n-button>
   <n-modal
     v-model:show="showModal"
     class="custom-card"
@@ -59,26 +56,34 @@ import {
   NInputGroup,
   useDialog,
 } from "naive-ui";
-import { ref, watch, toRaw } from "vue";
+import { ref, watch, toRaw, computed } from "vue";
 import type { docker_file_form } from "@/stores/docker-file/docker-file-form";
 import { extension_advance_data } from "@/stores/docker-file/docker-file-form";
 import PredefineHandle from "./PredefineHandle.vue";
 const dialog = useDialog();
+
+const props = defineProps<{
+  showModal: boolean;
+  dockerFileData: docker_file_form;
+  dockerFileIndex?: number;
+}>();
+const emits = defineEmits<{
+  (e: "update:showModal", newValue: boolean): void;
+}>();
+
 //模态框控制
-const showModal = ref(false);
-//处理点击搜索按钮
-async function handleClick() {
-  showModal.value = true;
-}
+const showModal = computed({
+  get: () => {
+    return props.showModal;
+  },
+  set: (newValue) => {
+    emits("update:showModal", newValue);
+  },
+});
 
 //表单基础变量数据
-const docker_file_form_data = ref<docker_file_form>({
-  base_image: {
-    image_name: "",
-    image_tag: "latest",
-  },
-  copy_command_str: "",
-  run_command_str: "",
+const docker_file_form_data = computed(() => {
+  return props.dockerFileData;
 });
 
 //监听当前镜像是否存在预定义
@@ -87,6 +92,9 @@ watch(
     return docker_file_form_data.value.base_image.image_name;
   },
   (value) => {
+    if (props.dockerFileIndex != undefined && props.dockerFileIndex > -1) {
+      return;
+    }
     const isExist = Object.keys(extension_advance_data).some((item) => {
       return item == value;
     });
@@ -119,10 +127,17 @@ function handlePredefineData(
 //保存dockerfile的元数据
 async function saveDockerFileYuanData() {
   const yuanShiData = (await window.el_store.get("docker_file_info")) || [];
-  if (yuanShiData.length == 0) {
-    await window.el_store.set("docker_file_info", [
-      toRaw(docker_file_form_data.value),
-    ]);
+  //区分创建还是修改
+  if (props.dockerFileIndex != undefined) {
+    //修改
+    yuanShiData[props.dockerFileIndex] = toRaw(docker_file_form_data.value);
+    await window.el_store.set("docker_file_info", yuanShiData);
+    showModal.value = false;
+  } else {
+    //新增
+    yuanShiData.push(toRaw(docker_file_form_data.value));
+    await window.el_store.set("docker_file_info", yuanShiData);
+    showModal.value = false;
   }
 }
 </script>
