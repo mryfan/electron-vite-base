@@ -59,8 +59,10 @@ import {
 import { ref, watch, toRaw, computed } from "vue";
 import type { docker_file_form } from "@/stores/docker-file/docker-file-form";
 import { extension_advance_data } from "@/stores/docker-file/docker-file-form";
+import { listReloadCounterStore } from "@/stores/docker-file/docker-file-list";
 import PredefineHandle from "./PredefineHandle.vue";
 const dialog = useDialog();
+const listReloadCounterStoreObj = listReloadCounterStore();
 
 const props = defineProps<{
   showModal: boolean;
@@ -139,6 +141,7 @@ async function saveDockerFileYuanData() {
     await window.el_store.set("docker_file_info", yuanShiData);
     showModal.value = false;
   }
+  listReloadCounterStoreObj.increment();
 }
 </script>
 

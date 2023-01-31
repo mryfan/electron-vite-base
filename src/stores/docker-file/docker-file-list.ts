@@ -2,10 +2,11 @@ import type { DataTableColumns } from "naive-ui";
 import { h } from "vue";
 import { NButton } from "naive-ui";
 import type { docker_file_form } from "@/stores/docker-file/docker-file-form";
-import type { Ref } from "vue";
+import { defineStore } from "pinia";
 
 export function createdColumns(action: {
   update: (rowData: docker_file_form, rowIndex: number) => void;
+  delete: (rowData: docker_file_form, rowIndex: number) => void;
 }): DataTableColumns<docker_file_form> {
   return [
     {
@@ -33,20 +34,36 @@ export function createdColumns(action: {
       title: "操作",
       key: "actions",
       render(rowData, rowIndex) {
-        return h(
-          NButton,
-          {
-            size: "small",
-            strong: true,
-            tertiary: true,
-            onClick() {
-              action.update(rowData, rowIndex);
+        return [
+          h(
+            NButton,
+            {
+              size: "small",
+              strong: true,
+              tertiary: true,
+              onClick() {
+                action.update(rowData, rowIndex);
+              },
             },
-          },
-          {
-            default: () => "修改",
-          }
-        );
+            {
+              default: () => "修改",
+            }
+          ),
+          h(
+            NButton,
+            {
+              size: "small",
+              strong: true,
+              tertiary: true,
+              onClick() {
+                action.delete(rowData, rowIndex);
+              },
+            },
+            {
+              default: () => "删除",
+            }
+          ),
+        ];
       },
     },
   ];
@@ -58,3 +75,17 @@ export async function getData() {
   );
   return docker_file_info;
 }
+
+export const listReloadCounterStore = defineStore(
+  "docker_file_list_reload_counter",
+  {
+    state: () => {
+      return { count: 0 };
+    },
+    actions: {
+      increment() {
+        this.count++;
+      },
+    },
+  }
+);
