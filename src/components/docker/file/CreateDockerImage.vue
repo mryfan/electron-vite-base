@@ -49,9 +49,11 @@ const formModel = ref({
 
 async function handleCreateImage() {
   //创建Dockerfile文件到临时目录的docker_file_temp_custom 目录下
-  // const tempDir = await window.node.temp_dir();
-  // console.log(tempDir);
-  
+  const tempDir = await window.node.temp_dir();
+  const docker_file_temp_custom_dir = "docker_file_temp_custom";
+  const dockerfileName = `${tempDir}/${docker_file_temp_custom_dir}/Dockerfile`;
+  await window.fs.createFile(dockerfileName, props.dockerFileStr);
+  console.log(tempDir);
   //将新生成的Dockerfile文件打包生成 tar -cvf Dockerfile.tar.gz Dockerfile
   //访问docker api 编译生成 新的镜像
   //关闭模态框
