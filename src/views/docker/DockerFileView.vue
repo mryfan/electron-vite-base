@@ -8,11 +8,16 @@
     :docker-file-data="dockerFileData"
     :docker-file-index="dockerFileIndex"
   />
+  <create-docker-image
+    v-model:show-modal="createImageShowModal"
+    :docker-file-str="dockerFileStr"
+  />
 </template>
 
 <script setup lang="ts">
 import { NCard, NDataTable } from "naive-ui";
 import SearchResource from "@/components/docker/file/SearchResource.vue";
+import CreateDockerImage from "@/components/docker/file/CreateDockerImage.vue";
 import {
   createdColumns,
   getData,
@@ -38,7 +43,7 @@ const action = {
     await window.el_store.set("docker_file_info", yuanShiData);
     listReloadCounterStoreObj.increment();
   },
-  createDockerFile: async (rowData: docker_file_form, rowIndex: number) => {
+  createDockerFile: async (rowData: docker_file_form) => {
     const openDialogReturnValue =
       await window.electron_api.dialog_showOpenDialog({
         properties: ["openDirectory"],
@@ -48,8 +53,15 @@ const action = {
     //生成文件的内容
     const fileContentStr = createFileContent(rowData);
     //将文件的内容写入到所选择的目录里
+    if (openDialogReturnValue.filePaths[0] == undefined) {
+      return;
+    }
     const fileName = `${openDialogReturnValue.filePaths[0]}/Dockerfile`;
     await window.fs.createFile(fileName, fileContentStr);
+  },
+  createDockerImage: (rowData: docker_file_form) => {
+    createImageShowModal.value = true;
+    dockerFileStr.value = createFileContent(rowData);
   },
 };
 const columns = createdColumns(action);
@@ -79,6 +91,10 @@ const dockerFileData = ref<docker_file_form>({
   run_command_str: "",
 });
 const dockerFileIndex = ref<number>(-1);
+
+//弹出创建镜像的模态框
+const createImageShowModal = ref(false);
+const dockerFileStr = ref("");
 </script>
 
 <style lang="scss" scoped></style>

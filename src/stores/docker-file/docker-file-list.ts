@@ -8,6 +8,7 @@ export function createdColumns(action: {
   update: (rowData: docker_file_form, rowIndex: number) => void;
   delete: (rowData: docker_file_form, rowIndex: number) => void;
   createDockerFile: (rowData: docker_file_form, rowIndex: number) => void;
+  createDockerImage: (rowData: docker_file_form, rowIndex: number) => void;
 }): DataTableColumns<docker_file_form> {
   return [
     {
@@ -70,6 +71,18 @@ export function createdColumns(action: {
             },
             {
               default: () => "生成DockerFile",
+            }
+          ),
+          h(
+            NButton,
+            {
+              size: "small",
+              onClick() {
+                action.createDockerImage(rowData, rowIndex);
+              },
+            },
+            {
+              default: () => "编译成镜像",
             }
           ),
         ];
