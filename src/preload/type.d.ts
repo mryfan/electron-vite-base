@@ -60,6 +60,9 @@ declare global {
         option: OpenDialogOptions
       ) => Promise<Electron.OpenDialogReturnValue>;
     };
+    node: {
+      temp_dir: () => Promise<string>;
+    };
   }
 }
 export {};

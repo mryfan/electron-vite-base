@@ -14,22 +14,14 @@
       </n-form-item>
     </n-form>
     <div style="text-align: center">
-      <n-button type="primary">创建镜像</n-button>
+      <n-button type="primary" @click="handleCreateImage">创建镜像</n-button>
     </div>
   </n-modal>
 </template>
 
 <script lang="ts" setup>
 import { computed, ref } from "vue";
-import {
-  NModal,
-  NLog,
-  NForm,
-  NFormItem,
-  NInput,
-  NInputGroup,
-  NButton,
-} from "naive-ui";
+import { NModal, NLog, NForm, NFormItem, NInput, NButton } from "naive-ui";
 const props = defineProps<{
   showModal: boolean;
   dockerFileStr: string;
@@ -54,6 +46,16 @@ const dockerFileContent = computed(() => {
 const formModel = ref({
   image_name: "",
 });
+
+async function handleCreateImage() {
+  //创建Dockerfile文件到临时目录的docker_file_temp_custom 目录下
+  // const tempDir = await window.node.temp_dir();
+  // console.log(tempDir);
+  
+  //将新生成的Dockerfile文件打包生成 tar -cvf Dockerfile.tar.gz Dockerfile
+  //访问docker api 编译生成 新的镜像
+  //关闭模态框
+}
 </script>
 
 <style lang="scss" scoped></style>

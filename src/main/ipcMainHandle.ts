@@ -16,6 +16,7 @@ import { handle as dockerRemoveContainer } from "./ipcHandle/docker_remove_conta
 import { handle as dockerInspectImage } from "./ipcHandle/docker_inspect_image";
 import { handle as execCmd } from "./ipcHandle/exec-cmd";
 import { handle as showOpenDialogHandle } from "./ipcHandle/show_open_dialog";
+import { handle as getTempDirHandle } from "./ipcHandle/get_temp_dir";
 import type { BrowserWindow, IpcMainInvokeEvent } from "electron";
 
 export function handle(mainWindow: BrowserWindow) {
@@ -102,4 +103,7 @@ export function handle(mainWindow: BrowserWindow) {
   });
   //处理系统对话框
   ipcMain.handle("electron_api_dialog_showOpenDialog", showOpenDialogHandle);
+
+  //处理node相关api组
+  ipcMain.handle("node_temp_dir", getTempDirHandle);
 }

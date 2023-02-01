@@ -64,3 +64,8 @@ contextBridge.exposeInMainWorld("electron_api", {
   dialog_showOpenDialog: (option: OpenDialogOptions) =>
     ipcRenderer.invoke("electron_api_dialog_showOpenDialog", option),
 });
+
+//node api
+contextBridge.exposeInMainWorld("node", {
+  temp_dir: () => ipcRenderer.invoke("node_temp_dir"),
+});
