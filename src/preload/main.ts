@@ -1,5 +1,6 @@
 import { contextBridge, ipcRenderer } from "electron";
 import type { IpcRendererEvent, OpenDialogOptions } from "electron";
+import type { CreateOptions } from "tar";
 import type {
   createContainerRequestBody,
   inspectImageParamsType,
@@ -68,4 +69,10 @@ contextBridge.exposeInMainWorld("electron_api", {
 //node api
 contextBridge.exposeInMainWorld("node", {
   temp_dir: () => ipcRenderer.invoke("node_temp_dir"),
+});
+
+//tar api
+contextBridge.exposeInMainWorld("tar", {
+  tar_czf: (options: CreateOptions, fileList: Array<string>) =>
+    ipcRenderer.invoke("tar_czf", options, fileList),
 });

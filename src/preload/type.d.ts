@@ -4,6 +4,7 @@ import type {
   removeContainerRequestBody,
 } from "@/stores/docker-project/create-compose-file";
 import type { IpcRendererEvent } from "electron";
+import type { CreateOptions } from "tar";
 
 declare global {
   //electron 的声明文件，用于提示
@@ -62,6 +63,15 @@ declare global {
     };
     node: {
       temp_dir: () => Promise<string>;
+    };
+    tar: {
+      tar_czf: (
+        options: CreateOptions,
+        fileList: Array<string>
+      ) => Promise<{
+        status: boolean;
+        data: { bytes: number; writerPath: string | Buffer };
+      }>;
     };
   }
 }

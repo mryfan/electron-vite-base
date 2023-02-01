@@ -17,6 +17,7 @@ import { handle as dockerInspectImage } from "./ipcHandle/docker_inspect_image";
 import { handle as execCmd } from "./ipcHandle/exec-cmd";
 import { handle as showOpenDialogHandle } from "./ipcHandle/show_open_dialog";
 import { handle as getTempDirHandle } from "./ipcHandle/get_temp_dir";
+import { handle as tarParamsWithCZFHandle } from "./ipcHandle/tar_czf";
 import type { BrowserWindow, IpcMainInvokeEvent } from "electron";
 
 export function handle(mainWindow: BrowserWindow) {
@@ -106,4 +107,7 @@ export function handle(mainWindow: BrowserWindow) {
 
   //处理node相关api组
   ipcMain.handle("node_temp_dir", getTempDirHandle);
+
+  //处理tar相关api组
+  ipcMain.handle("tar_czf", tarParamsWithCZFHandle);
 }
