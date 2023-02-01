@@ -4,7 +4,7 @@ import type {
   removeContainerRequestBody,
 } from "@/stores/docker-project/create-compose-file";
 
-import { ipcMain, dialog } from "electron";
+import { ipcMain } from "electron";
 import Store from "electron-store";
 import fs from "fs";
 import { handle as pingHandle } from "./ipcHandle/ping";
