@@ -6,7 +6,7 @@ import type {
 import type { IpcRendererEvent } from "electron";
 import type { CreateOptions } from "tar";
 import type { imageBuildOption } from "../main/ipcHandle/http_request_image_build";
-
+import type { thePathIsEmptyDirReType } from "../main/ipcHandle/the_path_is_empty_dir";
 declare global {
   //electron 的声明文件，用于提示
   interface Window {
@@ -34,6 +34,7 @@ declare global {
     fs: {
       stat: (path: string) => Promise<{ status: boolean; message: string }>;
       createFile: (fileName: string, content: string) => Promise<void>;
+      thePathIsEmptyDir: (path: string) => Promise<thePathIsEmptyDirReType>;
     };
     docker: {
       //创建容器

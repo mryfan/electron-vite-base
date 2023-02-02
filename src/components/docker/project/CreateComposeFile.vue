@@ -50,6 +50,7 @@ const showModal = computed({
   set: (newValue) => {
     emits("update:showModal", newValue);
     logLines.value = []; //重置日志数据
+    logCpLinesArray.value = [];
   },
 });
 

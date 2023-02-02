@@ -39,6 +39,8 @@ contextBridge.exposeInMainWorld("fs", {
   stat: (path: string) => ipcRenderer.invoke("fs_stat", path),
   createFile: (fileName: string, content: string) =>
     ipcRenderer.invoke("fs_create_file", fileName, content),
+  thePathIsEmptyDir: (path: string) =>
+    ipcRenderer.invoke("fs_the_path_is_empty_dir", path),
 });
 
 //调用docker  api的方法

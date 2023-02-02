@@ -20,6 +20,7 @@ import { handle as execCmd } from "./ipcHandle/exec-cmd";
 import { handle as showOpenDialogHandle } from "./ipcHandle/show_open_dialog";
 import { handle as getTempDirHandle } from "./ipcHandle/get_temp_dir";
 import { handle as tarParamsWithCZFHandle } from "./ipcHandle/tar_czf";
+import { handle as thePathDirIsEmptyDir } from "./ipcHandle/the_path_is_empty_dir";
 import type { BrowserWindow, IpcMainInvokeEvent } from "electron";
 
 export function handle(mainWindow: BrowserWindow) {
@@ -122,4 +123,7 @@ export function handle(mainWindow: BrowserWindow) {
 
   //处理tar相关api组
   ipcMain.handle("tar_czf", tarParamsWithCZFHandle);
+
+  //处理传入的路径是否是空目录
+  ipcMain.handle("fs_the_path_is_empty_dir", thePathDirIsEmptyDir);
 }

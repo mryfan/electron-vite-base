@@ -111,32 +111,51 @@ export async function baseReserve(
           createContainerRe.data as string
         );
         logCpLinesArray.value.push("临时容器ID:" + containerID);
+        try {
+          for (const actionParams of extraActionItems.action_params) {
+            if (
+              actionParams.container_dir == "" ||
+              actionParams.host_dir == ""
+            ) {
+              continue;
+            }
 
-        for (const actionParams of extraActionItems.action_params) {
-          if (actionParams.container_dir == "" || actionParams.host_dir == "") {
-            continue;
-          }
-          logCpLinesArray.value.push(
-            "复制容器里面的目录到宿主机目录" + actionParams.container_dir
-          );
-          const cmdStr = `docker cp ${containerID}:${actionParams.container_dir} ${baseDir}/${actionParams.host_dir}`;
-          const execRe = await window.exec.cmd(cmdStr);
-          if (execRe.stderr == "" && execRe.stdout == "") {
-            logCpLinesArray.value.push(
-              "当前容器目录" + actionParams.container_dir + "复制成功"
+            const thePathIsEmptyDirRe = await window.fs.thePathIsEmptyDir(
+              `${baseDir}/${actionParams.host_dir}`
             );
+            console.log(thePathIsEmptyDirRe);
+            if (
+              thePathIsEmptyDirRe.status == false &&
+              thePathIsEmptyDirRe.code == "the_path_is_not_dir"
+            ) {
+              throw thePathIsEmptyDirRe.message;
+            } else if (thePathIsEmptyDirRe.status == true) {
+              const cmdStr = `docker cp ${containerID}:${actionParams.container_dir} ${baseDir}/${actionParams.host_dir}`;
+              const execRe = await window.exec.cmd(cmdStr);
+              if (execRe.stderr == "" && execRe.stdout == "") {
+                logCpLinesArray.value.push(
+                  "当前容器目录" + actionParams.container_dir + "复制成功"
+                );
+              }
+            } else if (
+              thePathIsEmptyDirRe.status == false &&
+              thePathIsEmptyDirRe.code == "the_path_is_not_empty_dir"
+            ) {
+              logCpLinesArray.value.push(`${thePathIsEmptyDirRe.message}:跳过`);
+            }
           }
-        }
-        //删除容器
-        logCpLinesArray.value.push("开始删除当前临时容器:" + containerID);
-        const removeRe = await window.docker.removeContainer({
-          id: containerID,
-          force: true,
-        });
-        if (removeRe.result == true) {
-          logCpLinesArray.value.push("删除当前临时容器成功:" + containerID);
-        } else {
-          throw removeRe.data;
+        } finally {
+          //删除容器
+          logCpLinesArray.value.push("开始删除当前临时容器:" + containerID);
+          const removeRe = await window.docker.removeContainer({
+            id: containerID,
+            force: true,
+          });
+          if (removeRe.result == true) {
+            logCpLinesArray.value.push("删除当前临时容器成功:" + containerID);
+          } else {
+            logCpLinesArray.value.push("删除当前临时容器失败" + containerID);
+          }
         }
       }
     }
