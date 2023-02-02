@@ -1,6 +1,10 @@
 <template>
   <search-resource></search-resource>
   <n-card title="列表">
+    <template #header-extra
+      ><label>长时间的编译耗时建议选择</label
+      ><label style="color: red">手动编译成镜像</label></template
+    >
     <n-data-table :columns="columns" :data="data"></n-data-table>
   </n-card>
   <create-docker-file
@@ -10,6 +14,10 @@
   />
   <create-docker-image
     v-model:show-modal="createImageShowModal"
+    :docker-file-str="dockerFileStr"
+  />
+  <hand-actuated-create-docker-image
+    v-model:show-modal="handActuatedCreateImageShowModal"
     :docker-file-str="dockerFileStr"
   />
 </template>
@@ -27,6 +35,7 @@ import {
 import { ref, onMounted, watch } from "vue";
 import type { docker_file_form } from "@/stores/docker-file/docker-file-form";
 import CreateDockerFile from "@/components/docker/file/CreateDockerFile.vue";
+import HandActuatedCreateDockerImage from "@/components/docker/file/HandActuatedCreateDockerImage.vue";
 
 const listReloadCounterStoreObj = listReloadCounterStore();
 //获取表格字段数据
@@ -43,23 +52,25 @@ const action = {
     await window.el_store.set("docker_file_info", yuanShiData);
     listReloadCounterStoreObj.increment();
   },
-  createDockerFile: async (rowData: docker_file_form) => {
-    const openDialogReturnValue =
-      await window.electron_api.dialog_showOpenDialog({
-        properties: ["openDirectory"],
-        title: "请选择保存目录",
-        buttonLabel: "选择",
-      });
-    //生成文件的内容
-    const fileContentStr = createFileContent(rowData);
-    //将文件的内容写入到所选择的目录里
-    if (openDialogReturnValue.filePaths[0] == undefined) {
-      return;
-    }
-    const fileName = `${openDialogReturnValue.filePaths[0]}/Dockerfile`;
-    await window.fs.createFile(fileName, fileContentStr);
+  handActuatedCreateDockerImage: async (rowData: docker_file_form) => {
+    handActuatedCreateImageShowModal.value = true;
+    dockerFileStr.value = createFileContent(rowData);
+    // const openDialogReturnValue =
+    //   await window.electron_api.dialog_showOpenDialog({
+    //     properties: ["openDirectory"],
+    //     title: "请选择保存目录",
+    //     buttonLabel: "选择",
+    //   });
+    // //生成文件的内容
+    // const fileContentStr = createFileContent(rowData);
+    // //将文件的内容写入到所选择的目录里
+    // if (openDialogReturnValue.filePaths[0] == undefined) {
+    //   return;
+    // }
+    // const fileName = `${openDialogReturnValue.filePaths[0]}/Dockerfile`;
+    // await window.fs.createFile(fileName, fileContentStr);
   },
-  createDockerImage: (rowData: docker_file_form) => {
+  autoCreateDockerImage: (rowData: docker_file_form) => {
     createImageShowModal.value = true;
     dockerFileStr.value = createFileContent(rowData);
   },
@@ -95,6 +106,9 @@ const dockerFileIndex = ref<number>(-1);
 //弹出创建镜像的模态框
 const createImageShowModal = ref(false);
 const dockerFileStr = ref("");
+
+//弹出手动创建镜像的模态框
+const handActuatedCreateImageShowModal = ref(false);
 </script>
 
 <style lang="scss" scoped></style>

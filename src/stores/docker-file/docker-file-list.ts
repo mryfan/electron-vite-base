@@ -7,8 +7,11 @@ import { defineStore } from "pinia";
 export function createdColumns(action: {
   update: (rowData: docker_file_form, rowIndex: number) => void;
   delete: (rowData: docker_file_form, rowIndex: number) => void;
-  createDockerFile: (rowData: docker_file_form, rowIndex: number) => void;
-  createDockerImage: (rowData: docker_file_form, rowIndex: number) => void;
+  handActuatedCreateDockerImage: (
+    rowData: docker_file_form,
+    rowIndex: number
+  ) => void;
+  autoCreateDockerImage: (rowData: docker_file_form, rowIndex: number) => void;
 }): DataTableColumns<docker_file_form> {
   return [
     {
@@ -66,11 +69,11 @@ export function createdColumns(action: {
             {
               size: "small",
               onClick() {
-                action.createDockerFile(rowData, rowIndex);
+                action.handActuatedCreateDockerImage(rowData, rowIndex);
               },
             },
             {
-              default: () => "生成DockerFile",
+              default: () => "手动编译成镜像",
             }
           ),
           h(
@@ -78,11 +81,11 @@ export function createdColumns(action: {
             {
               size: "small",
               onClick() {
-                action.createDockerImage(rowData, rowIndex);
+                action.autoCreateDockerImage(rowData, rowIndex);
               },
             },
             {
-              default: () => "编译成镜像",
+              default: () => "自动编译成镜像",
             }
           ),
         ];

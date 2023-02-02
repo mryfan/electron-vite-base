@@ -5,6 +5,7 @@
     preset="card"
     title="保存容器"
     size="huge"
+    :mask-closable="false"
     style="width: 800px; position: fixed; right: 100px; left: 100px; top: 50px"
   >
     <n-scrollbar style="max-height: 500px">
@@ -198,17 +199,48 @@ watch(
   },
   async (value) => {
     emit("update:showModal", value);
-    console.log(value);
-    console.log(props.containerID);
     if (value == true) {
       if (props.containerID > 0) {
         const containerInfoArray = await window.el_store.get("container_info");
         model.value = containerInfoArray.find((item: container_info) => {
           return item.id == props.containerID;
         });
-        console.log(model.value);
       } else {
-        model.value = baseData;
+        model.value = {
+          id: 0,
+          project_id: props.projectID,
+          name: "",
+          images: {
+            name: "",
+            tag: "latest",
+          },
+          port_items: [
+            {
+              host_ip: "",
+              host_port: null,
+              container_port: null,
+              protocol: "tcp",
+            },
+          ],
+          volumes_items: [{ type: "bind", source: "", target: "" }],
+          extra_action_items: [
+            {
+              action_type: null,
+              action_params: [
+                {
+                  host_dir: "",
+                  container_dir: "",
+                },
+              ],
+            },
+          ],
+          env_items: [
+            {
+              key: "",
+              value: "",
+            },
+          ],
+        };
       }
     }
   }
