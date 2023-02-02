@@ -20,11 +20,6 @@ export interface inspectImageParamsType {
   image_name: string;
   image_tag: string;
 }
-
-interface hostAndContainerPathMap {
-  host_path: string;
-  container_path: string;
-}
 /**
  * 获取项目信息以及所包含的容器信息的数组
  * @param projectID
