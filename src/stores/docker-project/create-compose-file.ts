@@ -95,65 +95,49 @@ export async function baseReserve(
   }
   //创建每个volumes的宿主目录
   for (const containerInfo of containerInfoArray) {
-    //定义保存宿主机与容器 路径的关系map
-    const hostAndContainerPathMapArray: Array<hostAndContainerPathMap> = [];
-
-    for (const volumeItem of containerInfo.volumes_items) {
-      //类型是bind的处理
-      if (volumeItem.type == "bind") {
-        //生成宿主机的目录
-        const volumeItemDir = baseDir + "/" + volumeItem.source;
-        const volumeItemDirRe = await window.fs.stat(volumeItemDir);
-        if (volumeItemDirRe.status == false) {
-          throw re.message + "\n";
+    for (const extraActionItems of containerInfo.extra_action_items) {
+      //处理从容器到主机的复制操作
+      if (extraActionItems.action_type == "container_to_host") {
+        //创建临时容器
+        logCpLinesArray.value.push("容器复制到宿主机的处理");
+        logCpLinesArray.value.push("运行一个临时容器");
+        const createContainerRe = await window.docker.createContainer({
+          Image: `${containerInfo.images.name}:${containerInfo.images.tag}`,
+        });
+        if (createContainerRe.result == false) {
+          throw createContainerRe.data;
         }
-
-        if (volumeItem.copy_to_host == true) {
-          hostAndContainerPathMapArray.push({
-            host_path: volumeItemDir,
-            container_path: volumeItem.target,
-          });
-        }
-      }
-    }
-    //容器复制到宿主机的处理
-    if (hostAndContainerPathMapArray.length > 0) {
-      logCpLinesArray.value.push("容器复制到宿主机的处理");
-      //运行一个临时容器
-      logCpLinesArray.value.push("运行一个临时容器");
-      const createContainerRe = await window.docker.createContainer({
-        Image: `${containerInfo.images.name}:${containerInfo.images.tag}`,
-      });
-      if (createContainerRe.result == false) {
-        throw createContainerRe.data;
-      }
-      const { Id: containerID }: { Id: string } = JSON.parse(
-        createContainerRe.data as string
-      );
-      logCpLinesArray.value.push("临时容器ID:" + containerID);
-      //复制容器里面的文件出来
-      for (const iterator of hostAndContainerPathMapArray) {
-        logCpLinesArray.value.push(
-          "复制容器里面的目录到宿主机目录" + iterator.container_path
+        const { Id: containerID }: { Id: string } = JSON.parse(
+          createContainerRe.data as string
         );
-        const cmdStr = `docker cp ${containerID}:${iterator.container_path}/. ${iterator.host_path}`;
-        const execRe = await window.exec.cmd(cmdStr);
-        if (execRe.stderr == "" && execRe.stdout == "") {
+        logCpLinesArray.value.push("临时容器ID:" + containerID);
+
+        for (const actionParams of extraActionItems.action_params) {
+          if (actionParams.container_dir == "" || actionParams.host_dir == "") {
+            continue;
+          }
           logCpLinesArray.value.push(
-            "当前容器目录" + iterator.container_path + "复制成功"
+            "复制容器里面的目录到宿主机目录" + actionParams.container_dir
           );
+          const cmdStr = `docker cp ${containerID}:${actionParams.container_dir} ${baseDir}/${actionParams.host_dir}`;
+          const execRe = await window.exec.cmd(cmdStr);
+          if (execRe.stderr == "" && execRe.stdout == "") {
+            logCpLinesArray.value.push(
+              "当前容器目录" + actionParams.container_dir + "复制成功"
+            );
+          }
         }
-      }
-      //删除容器
-      logCpLinesArray.value.push("开始删除当前临时容器:" + containerID);
-      const removeRe = await window.docker.removeContainer({
-        id: containerID,
-        force: true,
-      });
-      if (removeRe.result == true) {
-        logCpLinesArray.value.push("删除当前临时容器成功:" + containerID);
-      } else {
-        throw removeRe.data;
+        //删除容器
+        logCpLinesArray.value.push("开始删除当前临时容器:" + containerID);
+        const removeRe = await window.docker.removeContainer({
+          id: containerID,
+          force: true,
+        });
+        if (removeRe.result == true) {
+          logCpLinesArray.value.push("删除当前临时容器成功:" + containerID);
+        } else {
+          throw removeRe.data;
+        }
       }
     }
   }

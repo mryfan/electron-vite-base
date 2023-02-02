@@ -43,25 +43,23 @@ const emits = defineEmits<{
   (e: "update:showModal", newValue: boolean): void;
 }>();
 
-const showModal = ref(false);
-
-watch(
-  () => {
+const showModal = computed({
+  get: () => {
     return props.showModal;
   },
-  async (value) => {
-    showModal.value = value;
-  }
-);
+  set: (newValue) => {
+    emits("update:showModal", newValue);
+    logLines.value = []; //重置日志数据
+  },
+});
+
 watch(
   () => {
     return showModal.value;
   },
   async (newValue) => {
-    emits("update:showModal", newValue);
     //当检测到打开模态框时，那么进行 创建compose文件的操作
     if (newValue) {
-      logLines.value = [];
       try {
         //获取项目信息以及当前项目的容器信息
         logLines.value.push("开始进行基础数据验证");
