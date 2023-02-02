@@ -1,6 +1,7 @@
 import { contextBridge, ipcRenderer } from "electron";
 import type { IpcRendererEvent, OpenDialogOptions } from "electron";
 import type { CreateOptions } from "tar";
+import type { imageBuildOption } from "../main/ipcHandle/http_request_image_build";
 import type {
   createContainerRequestBody,
   inspectImageParamsType,
@@ -21,6 +22,8 @@ contextBridge.exposeInMainWorld("http_request", {
     ipcRenderer.invoke("http_request_search_image_tags", q),
   image_create: (imageName: string, imageTag: string) =>
     ipcRenderer.invoke("http_request_image_create", imageName, imageTag),
+  image_build: (imageBuildOptionData: imageBuildOption) =>
+    ipcRenderer.invoke("http_request_image_build", imageBuildOptionData),
 });
 
 //加载electron-store 方法
@@ -53,6 +56,9 @@ contextBridge.exposeInMainWorld("main_send_to_render", {
   onUpdateImageCreateLog: (
     callback: (event: IpcRendererEvent, value: string) => void
   ) => ipcRenderer.on("update-image-create-log", callback),
+  onUpdateImageBuildLog: (
+    callback: (event: IpcRendererEvent, value: string) => void
+  ) => ipcRenderer.on("update-image-build-log", callback),
 });
 
 //exec_cmd

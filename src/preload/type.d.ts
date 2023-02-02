@@ -5,6 +5,7 @@ import type {
 } from "@/stores/docker-project/create-compose-file";
 import type { IpcRendererEvent } from "electron";
 import type { CreateOptions } from "tar";
+import type { imageBuildOption } from "../main/ipcHandle/http_request_image_build";
 
 declare global {
   //electron 的声明文件，用于提示
@@ -20,7 +21,10 @@ declare global {
       image_create: (
         imageName: string,
         imageTag: string
-      ) => Promise<{ result: boolean; data: string }>; //创建镜像
+      ) => Promise<{ result: boolean; data: string }>;
+      image_build: (
+        imageBuildOptionData: imageBuildOption
+      ) => Promise<{ result: boolean; data: string }>;
     };
     el_store: {
       get: (key: string) => Promise<string | Object | Boolean | Array>;
@@ -47,6 +51,9 @@ declare global {
     };
     main_send_to_render: {
       onUpdateImageCreateLog: (
+        callback: (event: IpcRendererEvent, value: string) => void
+      ) => void;
+      onUpdateImageBuildLog: (
         callback: (event: IpcRendererEvent, value: string) => void
       ) => void;
     };

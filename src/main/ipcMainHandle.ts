@@ -11,6 +11,8 @@ import { handle as pingHandle } from "./ipcHandle/ping";
 import { handle as httpRequestSearchImagesHandle } from "./ipcHandle/http_request_search_images";
 import { handle as httpRequestSearchImageTagsHandle } from "./ipcHandle/http_request_search_image_tags";
 import { handle as httpRequestImageCreateHandle } from "./ipcHandle/http_request_image_create";
+import { handle as httpRequestImageBuildHandle } from "./ipcHandle/http_request_image_build";
+import type { imageBuildOption } from "./ipcHandle/http_request_image_build";
 import { handle as dockerCreateContainer } from "./ipcHandle/docker_create_container";
 import { handle as dockerRemoveContainer } from "./ipcHandle/docker_remove_container";
 import { handle as dockerInspectImage } from "./ipcHandle/docker_inspect_image";
@@ -34,6 +36,16 @@ export function handle(mainWindow: BrowserWindow) {
         event,
         imageName,
         imageTag,
+        mainWindow
+      );
+    }
+  );
+  ipcMain.handle(
+    "http_request_image_build",
+    (event: IpcMainInvokeEvent, imageBuildOptionData: imageBuildOption) => {
+      return httpRequestImageBuildHandle(
+        event,
+        imageBuildOptionData,
         mainWindow
       );
     }

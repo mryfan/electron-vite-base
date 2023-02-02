@@ -39,7 +39,7 @@ export async function handle(
   event: IpcMainInvokeEvent,
   imageName: string,
   imageTag: string,
-  mainWindow: BrowserWindow,
+  mainWindow: BrowserWindow
 ) {
   const res = sendHttpRequest(mainWindow, imageName, imageTag);
   return res;
