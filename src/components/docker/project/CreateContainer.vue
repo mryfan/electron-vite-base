@@ -19,11 +19,8 @@
           maxWidth: '740px',
         }"
       >
-        <n-form-item label="容器名称">
-          <n-input
-            v-model:value="model.name"
-            placeholder="容器名称(不建议填写)"
-          />
+        <n-form-item label="服务名称">
+          <n-input v-model:value="model.services_name" placeholder="服务名称" />
         </n-form-item>
         <n-form-item label="镜像数据">
           <n-input-group>
@@ -148,7 +145,7 @@ const messages = useMessage();
 const baseData: container_info = {
   id: 0,
   project_id: props.projectID,
-  name: "",
+  services_name: "",
   images: {
     name: "",
     tag: "latest",
@@ -209,7 +206,7 @@ watch(
         model.value = {
           id: 0,
           project_id: props.projectID,
-          name: "",
+          services_name: "",
           images: {
             name: "",
             tag: "latest",

@@ -35,7 +35,7 @@ export interface env_items {
 export interface container_info {
   id: number;
   project_id: number;
-  name: string;
+  services_name: string;
   images: images;
   port_items: Array<port_items>;
   volumes_items: Array<volumes_items>;
