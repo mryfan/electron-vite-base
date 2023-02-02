@@ -4,7 +4,7 @@
     class="custom-card"
     preset="card"
     :mask-closable="false"
-    title="结果输出"
+    title="结果输出(compose.yml保存在项目的根目录中)"
     size="huge"
     style="
       width: 800px;
