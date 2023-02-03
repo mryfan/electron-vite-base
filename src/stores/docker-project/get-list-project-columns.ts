@@ -61,6 +61,21 @@ function expandColumns(counter: any, edit: any) {
       key: "port_info",
       render: (row: any) => {
         return row.port_items.map(function (params: any) {
+          let tmp = "";
+          if (params.host_ip != null && params.host_ip != "") {
+            tmp += params.host_ip + ":";
+          }
+          if (params.host_port != null && params.host_port != "") {
+            tmp += params.host_port + ":";
+          }
+          if (params.container_port != null && params.container_port != "") {
+            tmp += params.container_port + ":";
+          }
+
+          if (tmp == "") {
+            return tmp;
+          }
+
           return h(
             NTag,
             {
@@ -68,17 +83,7 @@ function expandColumns(counter: any, edit: any) {
             },
             {
               default: () => {
-                let tmp = "";
-                if (params.host_ip != "") {
-                  tmp += params.host_ip + ":";
-                }
-                if (params.host_port != "") {
-                  tmp += params.host_port + ":";
-                }
-                if (params.container_port != "") {
-                  tmp += params.container_port + ":";
-                }
-                if (params.protocol != "") {
+                if (params.protocol != null && params.protocol != "") {
                   tmp += params.protocol;
                 }
                 return tmp;
