@@ -290,4 +290,4 @@ const createData = async (): Promise<{
   return { project_info, container_info };
 };
 
-export { createColumns, createData, type RowData, containerStore };
+export { createColumns, createData, containerStore };
