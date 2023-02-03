@@ -71,7 +71,7 @@ async function handleCreateImage() {
     message.error("请输入编译成的镜像名称");
     return;
   }
-
+  onUpdateImageBuildLog();
   //创建Dockerfile文件到临时目录的docker_file_temp_custom 目录下
   const tempDir = await window.node.temp_dir();
   const docker_file_temp_custom_dir = "docker_file_temp_custom";
@@ -123,7 +123,7 @@ const runLogContentArray = ref<Array<string>>([]);
 const logInst = ref<LogInst | null>(null);
 
 //监听镜像创建的日志
-onMounted(() => {
+function onUpdateImageBuildLog() {
   window.main_send_to_render.onUpdateImageBuildLog((_event, value) => {
     const valueArray = value.split("\n");
     for (const initValue of valueArray) {
@@ -134,7 +134,8 @@ onMounted(() => {
       runLogContentArray.value.push(JSON.stringify(JSON.parse(trimValue)));
     }
   });
-});
+}
+
 watchEffect(() => {
   if (runLogContentArray.value.length) {
     nextTick(() => {
