@@ -179,8 +179,7 @@ async function checkAndDownloadImages(
 }
 
 let everyPullImagesLog = ref<Array<{ id: string; content: string }>>([]);
-
-onMounted(() => {
+function onUpdateImageCreateLog() {
   window.main_send_to_render.onUpdateImageCreateLog((_event, value) => {
     //维护一个内在的数组
     try {
@@ -224,7 +223,7 @@ onMounted(() => {
       console.log("value", value);
     }
   });
-});
+}
 
 const logAllArray = computed(() => {
   return logLines.value.concat(
@@ -250,6 +249,7 @@ watchEffect(() => {
 async function handleCreate() {
   try {
     //检查镜像是否存在并且下载镜像
+    onUpdateImageCreateLog();
     logLines.value.push("检查镜像是否存在");
     const { projectInfo, containerInfoArray } =
       projectInfoAndContainerInfoArrayObj.value;
