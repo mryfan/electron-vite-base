@@ -17,6 +17,7 @@ const createWindow = () => {
       preload: path.join(__dirname, "../preload/main.js"),
     },
     icon: path.join(__dirname, "../../public/logo.jpg"),
+    titleBarStyle: process.platform == "darwin" ? "hidden" : "default",
   });
   mainWindow.webContents.openDevTools({ mode: "right" });
   // mainWindow.loadURL(process.argv[2]);
