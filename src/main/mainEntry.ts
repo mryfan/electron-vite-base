@@ -16,6 +16,7 @@ const createWindow = () => {
     webPreferences: {
       preload: path.join(__dirname, "../preload/main.js"),
     },
+    icon: path.join(__dirname, "../../public/logo.jpg"),
   });
   mainWindow.webContents.openDevTools({ mode: "right" });
   // mainWindow.loadURL(process.argv[2]);
