@@ -17,11 +17,21 @@
   >
     <n-form label-placement="left">
       <n-form-item label="保存的目录(不建议修改)">
-        <n-input v-model:value="formModel.savePath" placeholder="Input" />
+        <n-input
+          v-model:value="formModel.savePath"
+          placeholder="Input"
+          :disabled="formModel.disabled"
+        />
       </n-form-item>
-      <div style="text-align: center">
+      <n-space justify="center">
         <n-button @click="handleCreate" type="primary">确定生成</n-button>
-      </div>
+        <n-button
+          @click="handleRun"
+          type="primary"
+          v-if="formModel.showRunButton"
+          >运行</n-button
+        >
+      </n-space>
     </n-form>
     <n-log :lines="logAllArray" trim :rows="33" />
   </n-modal>
@@ -36,6 +46,7 @@ import {
   NFormItem,
   NInput,
   NButton,
+  NSpace,
 } from "naive-ui";
 import type { LogInst } from "naive-ui";
 import { ref, watch, onMounted, computed, watchEffect, nextTick } from "vue";
@@ -70,6 +81,12 @@ const showModal = computed({
     emits("update:showModal", newValue);
     logLines.value = []; //重置日志数据
     logCpLinesArray.value = [];
+    extraLogLines.value = [];
+    formModel.value = {
+      savePath: "",
+      disabled: false,
+      showRunButton: false,
+    };
   },
 });
 
@@ -91,6 +108,8 @@ async function getProjectAndContainerInfoData(projectID: number) {
 //定义表单数据
 const formModel = ref({
   savePath: "",
+  disabled: false,
+  showRunButton: false,
 });
 function getSavePath() {
   const projectInfo = projectInfoAndContainerInfoArrayObj.value.projectInfo;
@@ -115,6 +134,7 @@ watch(
 //log 日志组件的逻辑
 const logLines = ref<Array<string>>([]);
 const logCpLinesArray = ref<Array<string>>([]);
+const extraLogLines = ref<Array<string>>([]);
 //检查并下载镜像
 async function checkAndDownloadImages(
   containerInfoArray: Array<container_info>
@@ -211,7 +231,8 @@ const logAllArray = computed(() => {
     everyPullImagesLog.value.map((item) => {
       return item.content;
     }),
-    logCpLinesArray.value
+    logCpLinesArray.value,
+    extraLogLines.value
   );
 });
 
@@ -233,10 +254,30 @@ async function handleCreate() {
     const { projectInfo, containerInfoArray } =
       projectInfoAndContainerInfoArrayObj.value;
     await checkAndDownloadImages(containerInfoArray);
-    await baseReserve(projectInfo, containerInfoArray, logCpLinesArray, formModel.value.savePath);
+    await baseReserve(
+      projectInfo,
+      containerInfoArray,
+      logCpLinesArray,
+      formModel.value.savePath
+    );
+    formModel.value.disabled = true;
+    formModel.value.showRunButton = true;
   } catch (error: any) {
     messages.error(error + "");
     logLines.value.push(error + "");
+  }
+}
+
+async function handleRun() {
+  const filePath = `${formModel.value.savePath}/compose.yml`;
+  const cmdCli = `docker-compose -f ${filePath} up -d`;
+  const cmdRe = await window.exec.cmd(cmdCli);
+  console.log(cmdRe);
+  if (cmdRe.stdout != "") {
+    extraLogLines.value.push(cmdRe.stdout);
+  }
+  if (cmdRe.stderr != "") {
+    extraLogLines.value.push(cmdRe.stderr);
   }
 }
 </script>
