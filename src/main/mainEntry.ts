@@ -23,7 +23,8 @@ const createWindow = () => {
   });
   mainWindow.webContents.openDevTools({ mode: "right" });
   // mainWindow.loadURL(process.argv[2]);
-  mainWindow.loadURL("http://localhost:5173");
+  // mainWindow.loadURL("http://localhost:5173");
+  mainWindow.loadFile("../index.html");
   ipcMainHandle(mainWindow);
 };
 

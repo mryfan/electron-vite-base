@@ -6,6 +6,7 @@ import vueJsx from "@vitejs/plugin-vue-jsx";
 import { devPlugin } from "./plugins/devPlugin";
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: "./",
   plugins: [vue(), vueJsx(), devPlugin()],
   resolve: {
     alias: {
