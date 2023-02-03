@@ -18,7 +18,7 @@
             <n-input
               v-model:value="item.source"
               type="text"
-              placeholder="挂载源"
+              placeholder="挂载源(直接写目录名称)"
             />
           </td>
           <td>

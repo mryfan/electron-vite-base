@@ -55,20 +55,6 @@ const action = {
   handActuatedCreateDockerImage: async (rowData: docker_file_form) => {
     handActuatedCreateImageShowModal.value = true;
     dockerFileStr.value = createFileContent(rowData);
-    // const openDialogReturnValue =
-    //   await window.electron_api.dialog_showOpenDialog({
-    //     properties: ["openDirectory"],
-    //     title: "请选择保存目录",
-    //     buttonLabel: "选择",
-    //   });
-    // //生成文件的内容
-    // const fileContentStr = createFileContent(rowData);
-    // //将文件的内容写入到所选择的目录里
-    // if (openDialogReturnValue.filePaths[0] == undefined) {
-    //   return;
-    // }
-    // const fileName = `${openDialogReturnValue.filePaths[0]}/Dockerfile`;
-    // await window.fs.createFile(fileName, fileContentStr);
   },
   autoCreateDockerImage: (rowData: docker_file_form) => {
     createImageShowModal.value = true;

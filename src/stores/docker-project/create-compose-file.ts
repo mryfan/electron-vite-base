@@ -166,12 +166,14 @@ type services_ports = Array<{
   published: number;
   protocol: string;
 }>;
+
+interface servicesItem {
+  image: string;
+  volumes?: services_volumes;
+  ports?: services_ports;
+}
 interface services {
-  [servicesName: string]: {
-    image: string;
-    volumes: services_volumes;
-    ports: services_ports;
-  };
+  [servicesName: string]: servicesItem;
 }
 export interface composeYMLType {
   version: string;
@@ -188,11 +190,18 @@ function generateYmlFile(
     services: {},
   };
   for (const iterator of containerInfoArray) {
-    composeYMLData.services[iterator.services_name] = {
+    const tmp: servicesItem = {
       image: `${iterator.images.name}:${iterator.images.tag}`,
-      volumes: volumesData(iterator.volumes_items, projectInfo),
-      ports: portsData(iterator.port_items),
     };
+    const volumesDataArray = volumesData(iterator.volumes_items, projectInfo);
+    if (volumesDataArray.length > 0) {
+      tmp["volumes"] = volumesDataArray;
+    }
+    const portsDataArray = portsData(iterator.port_items);
+    if (portsDataArray.length > 0) {
+      tmp["ports"] = portsDataArray;
+    }
+    composeYMLData.services[iterator.services_name] = tmp;
   }
   //创建文件并写入内容
   const fileName = `${projectInfo.project_path}/${projectInfo.dir_name}/compose.yml`;
@@ -224,11 +233,13 @@ function volumesData(
 function portsData(portItems: Array<port_items>): services_ports {
   const tmp: services_ports = [];
   for (const iterator of portItems) {
-    tmp.push({
-      target: iterator.container_port as number,
-      published: iterator.host_port as number,
-      protocol: iterator.protocol,
-    });
+    if (iterator.container_port != null && iterator.host_port != null) {
+      tmp.push({
+        target: iterator.container_port as number,
+        published: iterator.host_port as number,
+        protocol: iterator.protocol,
+      });
+    }
   }
   return tmp;
 }
