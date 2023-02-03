@@ -79,11 +79,12 @@ function checkProjectAndContainerInfo(
 export async function baseReserve(
   projectInfo: RowData,
   containerInfoArray: Array<container_info>,
-  logCpLinesArray: Ref<Array<string>>
+  logCpLinesArray: Ref<Array<string>>,
+  savePath: string
 ) {
   logCpLinesArray.value.push("开始准备挂载目录等设置");
   //创建本项目的基础目录
-  const baseDir = projectInfo.project_path + "/" + projectInfo.dir_name;
+  const baseDir = savePath;
   const re = await window.fs.stat(baseDir);
   if (re.status == false) {
     throw re.message + "\n";

@@ -4,7 +4,7 @@
     class="custom-card"
     preset="card"
     :mask-closable="false"
-    title="结果输出(compose.yml保存在项目的根目录中)"
+    title="配置参数"
     size="huge"
     style="
       width: 800px;
@@ -15,12 +15,28 @@
       top: 50px;
     "
   >
+    <n-form label-placement="left">
+      <n-form-item label="保存的目录(不建议修改)">
+        <n-input v-model:value="formModel.savePath" placeholder="Input" />
+      </n-form-item>
+      <div style="text-align: center">
+        <n-button @click="handleCreate" type="primary">确定生成</n-button>
+      </div>
+    </n-form>
     <n-log :lines="logAllArray" trim :rows="33" />
   </n-modal>
 </template>
 
 <script lang="ts" setup>
-import { NModal, NLog, useMessage } from "naive-ui";
+import {
+  NModal,
+  NLog,
+  useMessage,
+  NForm,
+  NFormItem,
+  NInput,
+  NButton,
+} from "naive-ui";
 import type { LogInst } from "naive-ui";
 import { ref, watch, onMounted, computed, watchEffect, nextTick } from "vue";
 import {
@@ -32,6 +48,8 @@ import {
 } from "@/stores/docker-project/create-compose-file";
 import type { container_info } from "@/stores/docker-project/container-info";
 import type { everyPullImagesLogType } from "@/stores/docker-project/create-compose-file";
+import { projectData } from "@/stores/docker-project/get-list-project-columns";
+import type { RowData } from "@/stores/docker-project/get-list-project-columns";
 
 const messages = useMessage();
 
@@ -43,6 +61,7 @@ const emits = defineEmits<{
   (e: "update:showModal", newValue: boolean): void;
 }>();
 
+//展示
 const showModal = computed({
   get: () => {
     return props.showModal;
@@ -54,27 +73,41 @@ const showModal = computed({
   },
 });
 
+//定义获取项目数据，以及容器数据
+const projectInfoAndContainerInfoArrayObj = ref<{
+  projectInfo: RowData;
+  containerInfoArray: Array<container_info>;
+}>({ projectInfo: projectData, containerInfoArray: [] });
+
+async function getProjectAndContainerInfoData(projectID: number) {
+  const { projectInfo, containerInfoArray } = await getProjectAndContainerInfo(
+    projectID
+  );
+  projectInfoAndContainerInfoArrayObj.value.projectInfo = projectInfo;
+  projectInfoAndContainerInfoArrayObj.value.containerInfoArray =
+    containerInfoArray;
+}
+
+//定义表单数据
+const formModel = ref({
+  savePath: "",
+});
+function getSavePath() {
+  const projectInfo = projectInfoAndContainerInfoArrayObj.value.projectInfo;
+  formModel.value.savePath =
+    projectInfo.project_path + "/" + projectInfo.dir_name;
+}
+
 watch(
   () => {
     return showModal.value;
   },
   async (newValue) => {
-    //当检测到打开模态框时，那么进行 创建compose文件的操作
     if (newValue) {
-      try {
-        //获取项目信息以及当前项目的容器信息
-        logLines.value.push("开始进行基础数据验证");
-        const { projectInfo, containerInfoArray } =
-          await getProjectAndContainerInfo(props.projectID);
-        logLines.value.push("基础数据验证通过");
-        //检查镜像是否存在并且下载镜像
-        logLines.value.push("检查镜像是否存在");
-        await checkAndDownloadImages(containerInfoArray);
-        await baseReserve(projectInfo, containerInfoArray, logCpLinesArray);
-      } catch (error: any) {
-        messages.error(error + "");
-        logLines.value.push(error + "");
-      }
+      //获取项目信息以及容器信息等
+      await getProjectAndContainerInfoData(props.projectID);
+      //同步保存的路径
+      getSavePath();
     }
   }
 );
@@ -191,6 +224,21 @@ watchEffect(() => {
     });
   }
 });
+
+//处理点击生成按钮
+async function handleCreate() {
+  try {
+    //检查镜像是否存在并且下载镜像
+    logLines.value.push("检查镜像是否存在");
+    const { projectInfo, containerInfoArray } =
+      projectInfoAndContainerInfoArrayObj.value;
+    await checkAndDownloadImages(containerInfoArray);
+    await baseReserve(projectInfo, containerInfoArray, logCpLinesArray, formModel.value.savePath);
+  } catch (error: any) {
+    messages.error(error + "");
+    logLines.value.push(error + "");
+  }
+}
 </script>
 
 <style lang="scss" scoped></style>

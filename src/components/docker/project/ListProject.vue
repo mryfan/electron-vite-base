@@ -46,7 +46,7 @@ const columns = createColumns({
     projectID.value = row.project_id;
     containerID.value = row.id;
   },
-  generateCompose(rowData: RowData) {
+  handActuatedGenerateCompose(rowData: RowData) {
     createComposeFileShowModal.value = true;
     projectID.value = rowData.id;
   },

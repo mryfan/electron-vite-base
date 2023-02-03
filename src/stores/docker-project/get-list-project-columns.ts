@@ -2,7 +2,7 @@ import type { DataTableColumns } from "naive-ui";
 import { NTag, NButton, NDataTable } from "naive-ui";
 import { h, ref } from "vue";
 
-type RowData = {
+export type RowData = {
   id: number;
   name: string;
   dir_name: string;
@@ -11,6 +11,17 @@ type RowData = {
   project_path: string;
   project_status: string;
   run_status: string;
+};
+
+export const projectData: RowData = {
+  id: 0,
+  name: "",
+  dir_name: "",
+  name_md5: "",
+  remark: "",
+  project_path: "",
+  project_status: "",
+  run_status: "",
 };
 
 function expandColumns(counter: any, edit: any) {
@@ -150,12 +161,12 @@ const createColumns = ({
   createContainer,
   counter,
   edit,
-  generateCompose,
+  handActuatedGenerateCompose,
 }: {
   createContainer: (rowData: RowData, rowIndex: number) => void;
   counter: any;
   edit: any;
-  generateCompose: (rowData: RowData, rowIndex: number) => void;
+  handActuatedGenerateCompose: (rowData: RowData, rowIndex: number) => void;
 }): DataTableColumns<RowData> => {
   return [
     {
@@ -218,25 +229,25 @@ const createColumns = ({
         );
       },
     },
-    {
-      title: "运行状态",
-      key: "run_status",
-      render(row: RowData) {
-        return h(
-          NTag,
-          {
-            style: {
-              marginRight: "6px",
-            },
-            type: "info",
-            bordered: false,
-          },
-          {
-            default: () => row.run_status,
-          }
-        );
-      },
-    },
+    // {
+    //   title: "运行状态",
+    //   key: "run_status",
+    //   render(row: RowData) {
+    //     return h(
+    //       NTag,
+    //       {
+    //         style: {
+    //           marginRight: "6px",
+    //         },
+    //         type: "info",
+    //         bordered: false,
+    //       },
+    //       {
+    //         default: () => row.run_status,
+    //       }
+    //     );
+    //   },
+    // },
     {
       title: "操作",
       key: "actions",
@@ -254,9 +265,9 @@ const createColumns = ({
             NButton,
             {
               size: "small",
-              onClick: () => generateCompose(row, rowIndex),
+              onClick: () => handActuatedGenerateCompose(row, rowIndex),
             },
-            { default: () => "生成compose文件" }
+            { default: () => "自定义生成compose文件" }
           ),
         ];
       },
