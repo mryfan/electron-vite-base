@@ -188,7 +188,7 @@ function generateYmlFile(
     services: {},
   };
   for (const iterator of containerInfoArray) {
-    composeYMLData.services[iterator.images.name] = {
+    composeYMLData.services[iterator.services_name] = {
       image: `${iterator.images.name}:${iterator.images.tag}`,
       volumes: volumesData(iterator.volumes_items, projectInfo),
       ports: portsData(iterator.port_items),

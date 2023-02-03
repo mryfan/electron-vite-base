@@ -20,11 +20,11 @@ function expandColumns(counter: any, edit: any) {
       key: "id",
     },
     {
-      title: "容器名称",
-      key: "name",
+      title: "服务名称",
+      key: "services_name",
       render: (row: any) => {
-        if (row.name != "") {
-          return row.name;
+        if (row.services_name != "") {
+          return row.services_name;
         }
         return h(
           NTag,
