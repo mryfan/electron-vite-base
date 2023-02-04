@@ -14,7 +14,8 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "build-64": "electron-builder --win --x64",
 		"build-linux": "electron-builder --linux",
-		"build-mac": "electron-builder --mac"
+		"build-mac": "electron-builder --mac",
+    "build-preview": "npx electron ."
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.4",
