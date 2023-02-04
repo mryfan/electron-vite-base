@@ -21,10 +21,12 @@ const createWindow = () => {
     frame: false,
     titleBarStyle: process.platform == "darwin" ? "hiddenInset" : "hidden",
   });
-  mainWindow.webContents.openDevTools({ mode: "right" });
-  // mainWindow.loadURL(process.argv[2]);
-  mainWindow.loadURL("http://localhost:5173");
-  // mainWindow.loadFile(path.join(__dirname, "../index.html"));
+  if (process.env.NODE_ENV == "development") {
+    mainWindow.webContents.openDevTools({ mode: "right" });
+    mainWindow.loadURL("http://localhost:5173");
+  } else {
+    mainWindow.loadFile(path.join(__dirname, "../index.html"));
+  }
   ipcMainHandle(mainWindow);
 };
 
