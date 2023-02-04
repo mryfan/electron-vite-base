@@ -60,7 +60,7 @@
         "output": "build"
     },
     "files": [
-      "dist"
+      "dist/**"
     ],
     "win": {  
         "icon": "./public/logo.ico",

@@ -18,7 +18,15 @@ const inverted = ref(false);
   <n-message-provider>
     <n-dialog-provider>
       <n-layout style="height: 100%">
-        <n-layout-header :inverted="inverted" bordered style="height: 30px">
+        <n-layout-header
+          :inverted="inverted"
+          bordered
+          style="
+            height: 30px;
+            -webkit-user-select: none;
+            -webkit-app-region: drag;
+          "
+        >
         </n-layout-header>
         <n-layout has-sider style="height: 96vh">
           <n-layout-sider
