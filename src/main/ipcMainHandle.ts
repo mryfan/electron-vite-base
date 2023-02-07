@@ -54,6 +54,7 @@ export function handle(mainWindow: BrowserWindow) {
 
   //electron-store
   const store = new Store();
+  console.log(store.path);
   ipcMain.handle("el_store_set", (event, key, value) => {
     store.set(key, value);
   });

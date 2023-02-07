@@ -1,4 +1,10 @@
 <template>
+  <n-space justify="center" v-if="showButton">
+    <n-button type="error" size="small" @click="clickButton">
+      注意:当前检测到运行环境为MAC,所以必须填写docker.sock的路径,否则软件可能会运行错误,点击添加
+    </n-button>
+  </n-space>
+  <!-- 以下为弹窗区域 -->
   <n-modal
     v-model:show="showModal"
     class="custom-card"
@@ -23,33 +29,42 @@
 
 <script lang="ts" setup>
 import { NSpace, NButton, NModal, NForm, NFormItem, NInput } from "naive-ui";
-import { ref, computed } from "vue";
+import { ref, watchEffect } from "vue";
 import { dockerSockFormData } from "@/stores/docker-common/docker-sock";
+import { isShowDockerSockPathModal } from "@/stores/docker-common/docker-sock";
 
-const props = defineProps<{
-  showModal: boolean;
-}>();
-const emits = defineEmits<{
-  (e: "update:showModal", newValue: boolean): void;
-}>();
-const showModal = computed({
-  get: () => {
-    return props.showModal;
-  },
-  set: (newValue) => {
-    emits("update:showModal", newValue);
-  },
+//弹出层的逻辑
+const showModal = ref(false);
+
+//是否展示错误警告的按钮
+watchEffect(async () => {
+  const re = await isShowDockerSockPathModal();
+  showButton.value = re;
 });
 
-const formData = ref(dockerSockFormData);
+//错误按钮区域
+const showButton = ref(false);
+function clickButton() {
+  showModal.value = true;
+}
 
+//form表单的逻辑
+const formData = ref(dockerSockFormData);
 async function saveDockerSockPath() {
   await window.el_store.set(
     "docker_sock_path",
     formData.value.docker_sock_path
   );
+  const re = await isShowDockerSockPathModal();
+  showButton.value = re;
   showModal.value = false;
-  formData.value = dockerSockFormData;
 }
+watchEffect(async () => {
+  if (showButton.value) {
+    const docker_sock_path =
+      (await window.el_store.get("docker_sock_path")) || "";
+    formData.value = { docker_sock_path };
+  }
+});
 </script>
 <style lang="scss" scoped></style>
