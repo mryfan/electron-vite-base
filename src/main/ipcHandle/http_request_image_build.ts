@@ -1,23 +1,37 @@
 import type { IpcMainInvokeEvent, BrowserWindow } from "electron";
 import http from "http";
 import fs from "fs";
+import type { RequestOptions } from "http";
+import type ElectronStore from "electron-store";
 
 function sendHttpRequest(
   mainWindow: BrowserWindow,
   imageBuildOption: imageBuildOption,
+  store: ElectronStore,
   encoding: BufferEncoding = "utf8"
 ): Promise<{ result: boolean; data: string }> {
-  const options = {
-    hostname: "127.0.0.1",
-    path: `/v1.41/build?t=${imageBuildOption.t}`,
-    port: "2375",
-    method: "POST",
-    headers: {
-      "content-type": "application/tar",
-    },
-  };
+  let options: RequestOptions = {};
+  if (process.platform == "darwin") {
+    options = {
+      path: `/v1.41/build?t=${imageBuildOption.t}`,
+      method: "POST",
+      socketPath: store.get("docker_sock_path") as string,
+      headers: {
+        "content-type": "application/tar",
+      },
+    };
+  } else {
+    options = {
+      hostname: "127.0.0.1",
+      path: `/v1.41/build?t=${imageBuildOption.t}`,
+      port: "2375",
+      method: "POST",
+      headers: {
+        "content-type": "application/tar",
+      },
+    };
+  }
 
-  console.log("imageBuildOption", imageBuildOption);
   let data = "";
   return new Promise(function (resolve, reject) {
     const req = http.request(options, function (res) {
@@ -56,9 +70,10 @@ function sendHttpRequest(
 export async function handle(
   event: IpcMainInvokeEvent,
   imageBuildOption: imageBuildOption,
-  mainWindow: BrowserWindow
+  mainWindow: BrowserWindow,
+  store: ElectronStore
 ) {
-  const res = sendHttpRequest(mainWindow, imageBuildOption);
+  const res = sendHttpRequest(mainWindow, imageBuildOption, store);
   return res;
 }
 

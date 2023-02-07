@@ -37,7 +37,8 @@ export function handle(mainWindow: BrowserWindow) {
         event,
         imageName,
         imageTag,
-        mainWindow
+        mainWindow,
+        store
       );
     }
   );
@@ -47,7 +48,8 @@ export function handle(mainWindow: BrowserWindow) {
       return httpRequestImageBuildHandle(
         event,
         imageBuildOptionData,
-        mainWindow
+        mainWindow,
+        store
       );
     }
   );
