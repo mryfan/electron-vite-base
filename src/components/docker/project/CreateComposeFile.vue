@@ -269,15 +269,19 @@ async function handleCreate() {
 }
 
 async function handleRun() {
-  const filePath = `${formModel.value.savePath}/compose.yml`;
-  const cmdCli = `docker-compose -f ${filePath} up -d`;
-  const cmdRe = await window.exec.cmd(cmdCli);
-  console.log(cmdRe);
-  if (cmdRe.stdout != "") {
-    extraLogLines.value.push(cmdRe.stdout);
-  }
-  if (cmdRe.stderr != "") {
-    extraLogLines.value.push(cmdRe.stderr);
+  try {
+    const filePath = `${formModel.value.savePath}/compose.yml`;
+    const cmdCli = `docker-compose -f ${filePath} up -d`;
+    const cmdRe = await window.exec.cmd(cmdCli);
+    console.log(cmdRe);
+    if (cmdRe.stdout != "") {
+      extraLogLines.value.push(cmdRe.stdout);
+    }
+    if (cmdRe.stderr != "") {
+      extraLogLines.value.push(cmdRe.stderr);
+    }
+  } catch (error: any) {
+    extraLogLines.value.push((error as Error).message);
   }
 }
 </script>

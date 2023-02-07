@@ -116,6 +116,12 @@ export async function baseReserve(
               continue;
             }
 
+            const fsStatRe = await window.fs.stat(
+              `${baseDir}/${actionParams.host_dir}`
+            );
+            if (fsStatRe.status == false) {
+              throw fsStatRe.message;
+            }
             const thePathIsEmptyDirRe = await window.fs.thePathIsEmptyDir(
               `${baseDir}/${actionParams.host_dir}`
             );

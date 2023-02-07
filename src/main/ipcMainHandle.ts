@@ -102,7 +102,7 @@ export function handle(mainWindow: BrowserWindow) {
   ipcMain.handle(
     "docker_remove_container",
     (event, requestBody: removeContainerRequestBody) => {
-      return dockerRemoveContainer(event, requestBody);
+      return dockerRemoveContainer(event, requestBody, store);
     }
   );
   //docker  检查镜像处理
