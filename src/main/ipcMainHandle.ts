@@ -95,7 +95,7 @@ export function handle(mainWindow: BrowserWindow) {
   ipcMain.handle(
     "docker_create_container",
     (event, requestBody: createContainerRequestBody) => {
-      return dockerCreateContainer(event, requestBody);
+      return dockerCreateContainer(event, requestBody, store);
     }
   );
   //docker  删除容器处理
@@ -109,7 +109,7 @@ export function handle(mainWindow: BrowserWindow) {
   ipcMain.handle(
     "docker_inspect_image",
     (event, paramsData: inspectImageParamsType) => {
-      return dockerInspectImage(event, paramsData);
+      return dockerInspectImage(event, paramsData, store);
     }
   );
   //执行CMD命令处理

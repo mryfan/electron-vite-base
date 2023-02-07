@@ -1,20 +1,35 @@
 import type { IpcMainInvokeEvent } from "electron";
 import http from "http";
+import type { RequestOptions } from "http";
 import type { createContainerRequestBody } from "@/stores/docker-project/create-compose-file";
+import type ElectronStore from "electron-store";
 
 function sendHttpRequest(
   requestBody: createContainerRequestBody,
+  store: ElectronStore,
   encoding: BufferEncoding = "utf8"
 ) {
-  const options = {
-    hostname: "127.0.0.1",
-    path: `/v1.41/containers/create`,
-    port: "2375",
-    method: "POST",
-    headers: {
-      "content-type": "application/json",
-    },
-  };
+  let options: RequestOptions = {};
+  if (process.platform == "darwin") {
+    options = {
+      path: `/v1.41/containers/create`,
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      socketPath: store.get("docker_sock_path") as string,
+    };
+  } else {
+    options = {
+      hostname: "127.0.0.1",
+      path: `/v1.41/containers/create`,
+      port: "2375",
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+    };
+  }
 
   let data = "";
   return new Promise<{ result: boolean; data?: string }>(function (
@@ -45,8 +60,9 @@ function sendHttpRequest(
 }
 export async function handle(
   event: IpcMainInvokeEvent,
-  requestBody: createContainerRequestBody
+  requestBody: createContainerRequestBody,
+  store: ElectronStore
 ) {
-  const res = sendHttpRequest(requestBody);
+  const res = sendHttpRequest(requestBody, store);
   return res;
 }
