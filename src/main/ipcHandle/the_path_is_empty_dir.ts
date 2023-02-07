@@ -11,10 +11,7 @@ export function handle(
   event: IpcMainInvokeEvent,
   path: string
 ): thePathIsEmptyDirReType {
-  console.log(1111);
-  
   const stat = fs.statSync(path);
-  console.log(22222);
   if (!stat.isDirectory()) {
     return {
       status: false,

@@ -49,7 +49,7 @@ import {
   NSpace,
 } from "naive-ui";
 import type { LogInst } from "naive-ui";
-import { ref, watch, onMounted, computed, watchEffect, nextTick } from "vue";
+import { ref, watch, computed, watchEffect, nextTick } from "vue";
 import {
   getProjectAndContainerInfo,
   getUsableValueArray,
