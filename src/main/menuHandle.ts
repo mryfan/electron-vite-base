@@ -76,7 +76,8 @@ const template: Array<MenuItemConstructorOptions> = [
     ],
   },
 ];
-const menu = Menu.buildFromTemplate(template);
-Menu.setApplicationMenu(menu);
 
-export function menuHandle() {}
+export function menuHandle() {
+  const menu = Menu.buildFromTemplate(template);
+  Menu.setApplicationMenu(menu);
+}

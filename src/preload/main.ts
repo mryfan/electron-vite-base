@@ -15,6 +15,10 @@ contextBridge.exposeInMainWorld("versions", {
   ping: () => ipcRenderer.invoke("ping"),
 });
 
+contextBridge.exposeInMainWorld("process", {
+  platform: () => process.platform,
+});
+
 contextBridge.exposeInMainWorld("http_request", {
   search_images: (q: string) =>
     ipcRenderer.invoke("http_request_search_images", q),

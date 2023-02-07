@@ -6,12 +6,24 @@ import {
   NLayoutSider,
   NMessageProvider,
   NDialogProvider,
+  NTag,
+  NSpace,
 } from "naive-ui";
-import { ref } from "vue";
+import { ref, watchEffect } from "vue";
 import { menuOptions } from "./stores/menu/left-menu";
 import { RouteOperation } from "./router/redirect";
+import DockerSockPathVue from "./components/docker/common/DockerSockPath.vue";
+import { isShowDockerSockPathModal } from "@/stores/docker-common/docker-sock";
+
 RouteOperation();
 const inverted = ref(false);
+
+//docker——sock 组件的方法
+const dockerSockPathShowModal = ref(false);
+watchEffect(async () => {
+  const re = await isShowDockerSockPathModal();
+  dockerSockPathShowModal.value = re;
+});
 </script>
 
 <template>
@@ -27,6 +39,8 @@ const inverted = ref(false);
             -webkit-app-region: drag;
           "
         >
+        <n-space justify="center"><n-tag type="error">111</n-tag></n-space>
+        
         </n-layout-header>
         <n-layout has-sider style="height: 96vh">
           <n-layout-sider
@@ -48,6 +62,10 @@ const inverted = ref(false);
           </n-layout-sider>
           <n-layout>
             <RouterView />
+            <!-- 加载全局的组件 -->
+            <docker-sock-path-vue
+              v-model:show-modal="dockerSockPathShowModal"
+            ></docker-sock-path-vue>
           </n-layout>
         </n-layout>
       </n-layout>
