@@ -124,9 +124,17 @@ watch(
   async (newValue) => {
     if (newValue) {
       //获取项目信息以及容器信息等
-      await getProjectAndContainerInfoData(props.projectID);
-      //同步保存的路径
-      getSavePath();
+      try {
+        await getProjectAndContainerInfoData(props.projectID);
+        //同步保存的路径
+        getSavePath();
+      } catch (error) {
+        if (typeof error == "string") {
+          messages.error(error);
+        } else {
+          messages.error((error as Error).message);
+        }
+      }
     }
   }
 );

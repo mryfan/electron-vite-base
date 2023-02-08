@@ -3,6 +3,7 @@ import type {
   container_info,
   volumes_items,
   port_items,
+  env_items,
 } from "./container-info";
 import type { Ref } from "vue";
 import yaml from "js-yaml";
@@ -178,6 +179,7 @@ interface servicesItem {
   image: string;
   volumes?: services_volumes;
   ports?: services_ports;
+  environment?: Array<string>;
 }
 interface services {
   [servicesName: string]: servicesItem;
@@ -207,6 +209,10 @@ function generateYmlFile(
     const portsDataArray = portsData(iterator.port_items);
     if (portsDataArray.length > 0) {
       tmp["ports"] = portsDataArray;
+    }
+    const envDataArray = envData(iterator.env_items);
+    if (envDataArray.length > 0) {
+      tmp["environment"] = envDataArray;
     }
     composeYMLData.services[iterator.services_name] = tmp;
   }
@@ -246,6 +252,16 @@ function portsData(portItems: Array<port_items>): services_ports {
         published: iterator.host_port as number,
         protocol: iterator.protocol,
       });
+    }
+  }
+  return tmp;
+}
+
+function envData(envItems: Array<env_items>): Array<string> {
+  const tmp: Array<string> = [];
+  for (const iterator of envItems) {
+    if (iterator.key != "" && iterator.value != "") {
+      tmp.push(`${iterator.key}=${iterator.value}`);
     }
   }
   return tmp;
