@@ -16,7 +16,7 @@
         />
       </n-form-item>
       <component
-        :is="tabs[currentTab as keyof typeof tabs]"
+        :is="tabs[currentTab]"
         v-model="initModel.action_params"
       ></component>
     </n-form>
@@ -64,7 +64,7 @@ const tabs = {
 };
 
 const currentTab = computed(() => {
-  return initModel.value.action_type;
+  return initModel.value.action_type as keyof typeof tabs;
 });
 //下拉的切换
 function handleUpdateValue(value: string) {
