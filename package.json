@@ -73,6 +73,7 @@
         ]
     },
     "dmg": {
+      "icon": "./public/logo.ico",
     	"contents": [
     		{
     			"x": 0,
@@ -82,7 +83,7 @@
     	]
     },
     "linux": {
-    	"icon": "./public/logo.ico"
+    	"icon": "./public/logo.ico" 
     },
     "mac": {
         "category": "your.app.category.type",
