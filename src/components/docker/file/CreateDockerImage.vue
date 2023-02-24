@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, onMounted, watchEffect, nextTick } from "vue";
+import { computed, ref, watchEffect, nextTick } from "vue";
 import {
   NModal,
   NLog,

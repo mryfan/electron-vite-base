@@ -71,22 +71,46 @@ const extensionData = computed(() => {
 });
 
 function confirmUse() {
-  let copy =
-    "--from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin";
-  let run = "install-php-extensions ";
+  const { install_php_extensions_cli, copy_cli } = getInstallPHPExtensions();
+
+  const runCLI = getCustomCLIExtensions(install_php_extensions_cli);
+
+  emit("update:mainData", copy_cli, runCLI);
+  showModal.value = false;
+}
+
+function getInstallPHPExtensions() {
+  let initRunCli = "install-php-extensions ";
   let tmpRun = "";
   extensionData.value.forEach((item) => {
-    if (item.isChecked) {
+    if (item.isChecked && item.type == "install-php-extensions_cli") {
       const tag = item.tag ? `-${item.tag}` : "";
       tmpRun += ` ${item.name}${tag}`;
     }
   });
-  if (tmpRun == "") {
-    emit("update:mainData", "", "");
-  } else {
-    emit("update:mainData", copy, run + tmpRun);
+
+  let copy = "";
+  if (tmpRun != "") {
+    copy =
+      "--from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin";
   }
-  showModal.value = false;
+  return {
+    install_php_extensions_cli: tmpRun == "" ? "" : initRunCli + tmpRun,
+    copy_cli: copy,
+  };
+}
+
+function getCustomCLIExtensions(install_php_extensions_cli: string) {
+  let tmpRun = "";
+  extensionData.value.forEach((item) => {
+    if (item.isChecked && item.type == "custom_cli") {
+      tmpRun += ` ${item.custom_cli}`;
+    }
+  });
+
+  return install_php_extensions_cli == ""
+    ? tmpRun
+    : `${install_php_extensions_cli} && ${tmpRun}`;
 }
 </script>
 

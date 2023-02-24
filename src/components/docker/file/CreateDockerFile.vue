@@ -83,10 +83,11 @@ const showModal = computed({
   },
 });
 
+const docker_file_form_data = ref(props.dockerFileData);
 //表单基础变量数据
-const docker_file_form_data = computed(() => {
-  return props.dockerFileData;
-});
+// const docker_file_form_data = computed(() => {
+//   return props.dockerFileData;
+// });
 
 //监听当前镜像是否存在预定义
 watch(

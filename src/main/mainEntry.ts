@@ -18,8 +18,8 @@ const createWindow = () => {
       preload: path.join(__dirname, "../preload/main.js"),
     },
     icon: path.join(__dirname, "../../public/logo.jpg"),
-    frame: false,
-    titleBarStyle: process.platform == "darwin" ? "hiddenInset" : "hidden",
+    // frame: false,
+    // titleBarStyle: process.platform == "darwin" ? "hiddenInset" : "hidden",
   });
   if (process.env.NODE_ENV == "development") {
     mainWindow.webContents.openDevTools({ mode: "right" });
@@ -31,7 +31,7 @@ const createWindow = () => {
 };
 
 //菜单处理
-menuHandle();
+// menuHandle();
 
 app.whenReady().then(() => {
   createWindow();
