@@ -10,9 +10,15 @@
       <template v-for="(item, index) in extensionData" v-bind:key="index">
         <n-form inline label-placement="left">
           <n-form-item label="扩展名称">
-            <n-input v-model:value="item.name"></n-input>
+            <n-input
+              v-model:value="item.name"
+              :disabled="item.type == `custom_cli`"
+            ></n-input>
           </n-form-item>
-          <n-form-item label="扩展版本">
+          <n-form-item
+            label="扩展版本"
+            v-if="item.type == `install-php-extensions_cli`"
+          >
             <n-input v-model:value="item.tag"></n-input>
           </n-form-item>
           <n-form-item label="是否使用">
@@ -101,16 +107,14 @@ function getInstallPHPExtensions() {
 }
 
 function getCustomCLIExtensions(install_php_extensions_cli: string) {
-  let tmpRun = "";
+  let tmpRun = install_php_extensions_cli;
   extensionData.value.forEach((item) => {
     if (item.isChecked && item.type == "custom_cli") {
-      tmpRun += ` ${item.custom_cli}`;
+      tmpRun += ` ${tmpRun == "" ? "" : "&&"} ${item.custom_cli}`;
     }
   });
 
-  return install_php_extensions_cli == ""
-    ? tmpRun
-    : `${install_php_extensions_cli} && ${tmpRun}`;
+  return tmpRun;
 }
 </script>
 

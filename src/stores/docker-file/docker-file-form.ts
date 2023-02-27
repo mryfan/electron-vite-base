@@ -39,6 +39,16 @@ export const extension_advance_data: extension_advance_type = {
       isChecked: true,
     },
     {
+      name: "composer",
+      type: "custom_cli",
+      custom_cli:
+        "curl -sS https://getcomposer.org/installer | php \
+         && mv composer.phar /usr/local/bin/composer \
+         && composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/ \
+        ",
+      isChecked: true,
+    },
+    {
       name: "xdebug",
       type: "install-php-extensions_cli",
       isChecked: true,
