@@ -141,5 +141,10 @@ export const extension_advance_data: extension_advance_type = {
       type: "install-php-extensions_cli",
       isChecked: true,
     },
+    {
+      name: "imagick",
+      type: "install-php-extensions_cli",
+      isChecked: true,
+    },
   ],
 };
