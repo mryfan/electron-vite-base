@@ -19,6 +19,7 @@ export interface every_extension_type {
   type: "custom_cli" | "install-php-extensions_cli"; //类型  custom_cli自定义类型，需要自己写命令；install-php-extensions_cli 脚本类型
   isChecked: boolean;
   custom_cli?: string;
+  hintText?: string;
 }
 
 export type extension_advance_type = {
@@ -29,14 +30,10 @@ export const extension_advance_data: extension_advance_type = {
   php: [
     {
       name: "gd",
-      type: "custom_cli",
-      custom_cli:
-        "apt-get update && apt-get install -y \
-         libfreetype6-dev libjpeg62-turbo-dev \
-         libpng-dev \
-         && docker-php-ext-configure gd --with-freetype --with-jpeg \
-         && docker-php-ext-install -j$(nproc) gd ",
+      type: "install-php-extensions_cli",
       isChecked: true,
+      hintText:
+        "此扩展需要访问aomedia.googlesource.com网址，请提前挂上代理翻墙后勾选!",
     },
     {
       name: "composer",
@@ -136,6 +133,11 @@ export const extension_advance_data: extension_advance_type = {
     },
     {
       name: "pgsql",
+      type: "install-php-extensions_cli",
+      isChecked: true,
+    },
+    {
+      name: "memcache",
       type: "install-php-extensions_cli",
       isChecked: true,
     },

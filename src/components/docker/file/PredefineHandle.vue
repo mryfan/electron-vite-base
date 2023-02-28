@@ -24,6 +24,14 @@
           <n-form-item label="是否使用">
             <n-switch v-model:value="item.isChecked"></n-switch>
           </n-form-item>
+          <n-tooltip trigger="hover" v-if="item.hintText">
+            <template #trigger>
+              <n-icon size="40">
+                <information-circle-outline style="color: red" />
+              </n-icon>
+            </template>
+            {{ item.hintText }}
+          </n-tooltip>
         </n-form>
       </template>
       <n-button @click="confirmUse">确定使用</n-button>
@@ -40,7 +48,10 @@ import {
   NButton,
   NSwitch,
   NScrollbar,
+  NIcon,
+  NTooltip,
 } from "naive-ui";
+import { InformationCircleOutline } from "@vicons/ionicons5";
 import { computed, ref } from "vue";
 import type { every_extension_type } from "@/stores/docker-file/docker-file-form";
 import { extension_advance_data } from "@/stores/docker-file/docker-file-form";
