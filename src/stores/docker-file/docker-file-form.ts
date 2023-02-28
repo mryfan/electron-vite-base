@@ -42,7 +42,8 @@ export const extension_advance_data: extension_advance_type = {
       name: "composer",
       type: "custom_cli",
       custom_cli:
-        "curl -sS https://getcomposer.org/installer | php \
+        "apt-get update && apt-get install -y zip unzip \
+        && curl -sS https://getcomposer.org/installer | php \
          && mv composer.phar /usr/local/bin/composer \
          && composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/ \
         ",
