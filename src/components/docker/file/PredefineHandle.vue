@@ -140,7 +140,7 @@ function getAfterRunCLIExtensions(installRunCLI: string) {
   tmpRun +=
     tmpRun == ""
       ? ""
-      : "&& cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini";
+      : " && cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini";
   return tmpRun;
 }
 </script>

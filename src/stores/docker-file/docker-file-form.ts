@@ -48,7 +48,7 @@ export const extension_advance_data: extension_advance_type = {
       type: "install-php-extensions_cli",
       isChecked: true,
       after_run_cli:
-        'echo "xdebug.log=/tmp/xdebug.log\n xdebug.mode=debug\n xdebug.start_with_request=yes\n xdebug.discover_client_host=true\n xdebug.client_host=host.docker.internal\n xdebug.client_port=9003" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini',
+        "echo 'xdebug.log=/tmp/xdebug.log\\n\\ \nxdebug.mode=debug\\n\\ \nxdebug.start_with_request=yes\\n\\ \nxdebug.discover_client_host=true\\n\\ \nxdebug.client_host=host.docker.internal\\n\\ \nxdebug.client_port=9003\\n' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini",
     },
     {
       name: "bcmath",
