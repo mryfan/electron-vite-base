@@ -23,6 +23,7 @@
       <n-form-item label="COPY指令">
         <n-input
           placeholder="COPY指令"
+          type="textarea"
           v-model:value="docker_file_form_data.copy_command_str"
         >
         </n-input>
@@ -30,6 +31,8 @@
       <n-form-item label="RUN指令">
         <n-input
           placeholder="RUN指令"
+          type="textarea"
+          :autosize="{ minRows: 3, maxRows: 7 }"
           v-model:value="docker_file_form_data.run_command_str"
         >
         </n-input>

@@ -90,7 +90,8 @@ const extensionData = computed(() => {
 function confirmUse() {
   const { install_php_extensions_cli, copy_cli } = getInstallPHPExtensions();
 
-  const runCLI = getCustomCLIExtensions(install_php_extensions_cli);
+  const installRunCLI = getInstallRunCLIExtensions(install_php_extensions_cli);
+  const runCLI = getAfterRunCLIExtensions(installRunCLI);
 
   emit("update:mainData", copy_cli, runCLI);
   showModal.value = false;
@@ -117,11 +118,22 @@ function getInstallPHPExtensions() {
   };
 }
 
-function getCustomCLIExtensions(install_php_extensions_cli: string) {
+function getInstallRunCLIExtensions(install_php_extensions_cli: string) {
   let tmpRun = install_php_extensions_cli;
   extensionData.value.forEach((item) => {
     if (item.isChecked && item.type == "custom_cli") {
-      tmpRun += ` ${tmpRun == "" ? "" : "&&"} ${item.custom_cli}`;
+      tmpRun += ` ${tmpRun == "" ? "" : "&&"} ${item.install_run_cli}`;
+    }
+  });
+
+  return tmpRun;
+}
+
+function getAfterRunCLIExtensions(installRunCLI: string) {
+  let tmpRun = installRunCLI;
+  extensionData.value.forEach((item) => {
+    if (item.isChecked && item.after_run_cli && item.after_run_cli != "") {
+      tmpRun += ` ${tmpRun == "" ? "" : "&&"} ${item.after_run_cli}`;
     }
   });
 

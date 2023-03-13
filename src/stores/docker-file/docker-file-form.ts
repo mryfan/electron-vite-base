@@ -18,7 +18,8 @@ export interface every_extension_type {
   params?: Array<every_extension_params_type>; //参数
   type: "custom_cli" | "install-php-extensions_cli"; //类型  custom_cli自定义类型，需要自己写命令；install-php-extensions_cli 脚本类型
   isChecked: boolean;
-  custom_cli?: string;
+  after_run_cli?: string;
+  install_run_cli?: string;
   hintText?: string;
 }
 
@@ -38,18 +39,16 @@ export const extension_advance_data: extension_advance_type = {
     {
       name: "composer",
       type: "custom_cli",
-      custom_cli:
-        "apt-get update && apt-get install -y zip unzip \
-        && curl -sS https://getcomposer.org/installer | php \
-         && mv composer.phar /usr/local/bin/composer \
-         && composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/ \
-        ",
+      install_run_cli:
+        "apt-get update && apt-get install -y zip unzip && curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer && composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/",
       isChecked: true,
     },
     {
       name: "xdebug",
       type: "install-php-extensions_cli",
       isChecked: true,
+      after_run_cli:
+        'echo "xdebug.log=/tmp/xdebug.log" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini',
     },
     {
       name: "bcmath",
