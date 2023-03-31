@@ -44,6 +44,12 @@ export const extension_advance_data: extension_advance_type = {
       isChecked: true,
     },
     {
+      name: "git",
+      type: "custom_cli",
+      install_run_cli: "apt-get update && apt-get install -y git",
+      isChecked: true,
+    },
+    {
       name: "xdebug",
       type: "install-php-extensions_cli",
       isChecked: true,
@@ -52,6 +58,11 @@ export const extension_advance_data: extension_advance_type = {
     },
     {
       name: "bcmath",
+      type: "install-php-extensions_cli",
+      isChecked: true,
+    },
+    {
+      name: "xhprof",
       type: "install-php-extensions_cli",
       isChecked: true,
     },
